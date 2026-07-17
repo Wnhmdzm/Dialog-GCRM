@@ -1,0 +1,82 @@
+export type UserRole = 'admin' | 'employee';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  joinedAt: string;
+  firstTimePasswordChangeRequired: boolean;
+  status: 'active' | 'suspended';
+  avatarUrl?: string;
+}
+
+export interface OfficeSite {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  radiusMeters: number; // radius within which staff can clock in
+  address: string;
+}
+
+export interface PunchLog {
+  id: string;
+  userId: string;
+  userName: string; // denormalized for easy table search
+  userEmail: string;
+  type: 'in' | 'out';
+  timestamp: string; // ISO string
+  latitude: number;
+  longitude: number;
+  manhours?: number; // populated on clock-out for the duration since corresponding clock-in
+  officeSiteId: string | null; // which office site they clocked in at
+  officeSiteName: string | null;
+  tags: string[];
+  note: string;
+  verified: boolean;
+}
+
+export interface ActivityLog {
+  id: string;
+  userId: string;
+  userName: string;
+  userRole: UserRole;
+  action: string;
+  details: string;
+  timestamp: string; // ISO string
+}
+
+export interface EmailNotification {
+  id: string;
+  recipientEmail: string;
+  subject: string;
+  body: string;
+  sentAt: string;
+  type: 'missing_shift' | 'overtime' | 'password_reset' | 'system';
+  read: boolean;
+}
+
+export interface SimulatedLocation {
+  latitude: number;
+  longitude: number;
+  name: string;
+}
+
+export interface LeaveDay {
+  id: string;
+  userId: string;
+  userName: string;
+  date: string; // YYYY-MM-DD
+  type: 'Annual' | 'Emergency' | 'Sick' | 'Unpaid';
+  status: 'Approved' | 'Pending' | 'Rejected';
+  note: string;
+}
+
+export interface LeaveQuota {
+  userId: string;
+  userName: string;
+  annual: number;
+  emergency: number;
+  sick: number;
+}

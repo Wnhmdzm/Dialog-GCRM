@@ -1,0 +1,6 @@
+{
+  "name": "Dialog: Personal Onboard CRM",
+  "description": "An advanced onboarding and staff shift CRM featuring whole-year interactive leave planning, admin-managed quotas, tiered admin/employee roles, geolocation clocking, and automated email alerts.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

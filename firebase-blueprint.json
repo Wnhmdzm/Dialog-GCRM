@@ -1,0 +1,144 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "An employee or manager account profile in the CRM.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of the user." },
+        "name": { "type": "string", "description": "Full name of the employee." },
+        "email": { "type": "string", "format": "email", "description": "Corporate email address." },
+        "role": { "type": "string", "enum": ["admin", "employee"], "description": "System privileges role." },
+        "joinedAt": { "type": "string", "format": "date-time", "description": "ISO timestamp when employee joined." },
+        "firstTimePasswordChangeRequired": { "type": "boolean", "description": "True if employee must reset temporary password on first login." },
+        "status": { "type": "string", "enum": ["active", "suspended"], "description": "Account status." },
+        "avatarUrl": { "type": "string", "description": "Optional profile photo url." }
+      },
+      "required": ["id", "name", "email", "role", "joinedAt", "firstTimePasswordChangeRequired", "status"]
+    },
+    "OfficeSite": {
+      "title": "OfficeSite",
+      "description": "A geofenced office or work site with a center coordinate and allowed entry radius.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique site identifier." },
+        "name": { "type": "string", "description": "Name of the gated site." },
+        "latitude": { "type": "number", "description": "Latitude coordinate of site center." },
+        "longitude": { "type": "number", "description": "Longitude coordinate of site center." },
+        "radiusMeters": { "type": "number", "description": "Authorized clock-in radius in meters." },
+        "address": { "type": "string", "description": "Human readable address of office site." }
+      },
+      "required": ["id", "name", "latitude", "longitude", "radiusMeters", "address"]
+    },
+    "PunchLog": {
+      "title": "PunchLog",
+      "description": "A record of an employee clocking in or out at a geofenced office.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique punch identifier." },
+        "userId": { "type": "string", "description": "Reference ID of the employee user." },
+        "userName": { "type": "string", "description": "Denormalized name of the employee." },
+        "userEmail": { "type": "string", "description": "Denormalized email of the employee." },
+        "type": { "type": "string", "enum": ["in", "out"], "description": "Punch direction type." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "ISO timestamp of the punch." },
+        "latitude": { "type": "number", "description": "Latitude where punch was registered." },
+        "longitude": { "type": "number", "description": "Longitude where punch was registered." },
+        "manhours": { "type": "number", "description": "Calculated hours since corresponding clock-in, populated on clock-out." },
+        "officeSiteId": { "type": "string", "description": "ID of office site where punch occurred." },
+        "officeSiteName": { "type": "string", "description": "Denormalized name of office site where punch occurred." },
+        "tags": { "type": "array", "description": "List of tags associated with this shift." },
+        "note": { "type": "string", "description": "Mandatory or optional note entered by employee." },
+        "verified": { "type": "boolean", "description": "Compliance validation status." }
+      },
+      "required": ["id", "userId", "userName", "userEmail", "type", "timestamp", "latitude", "longitude", "verified"]
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "An administrative system audit log record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique audit identifier." },
+        "userId": { "type": "string", "description": "ID of user who performed the action." },
+        "userName": { "type": "string", "description": "Name of user who performed the action." },
+        "userRole": { "type": "string", "enum": ["admin", "employee"], "description": "Privilege level of user." },
+        "action": { "type": "string", "description": "Type of system action." },
+        "details": { "type": "string", "description": "Detailed text description of audit entry." },
+        "timestamp": { "type": "string", "format": "date-time", "description": "ISO timestamp of the audit log." }
+      },
+      "required": ["id", "userId", "userName", "userRole", "action", "details", "timestamp"]
+    },
+    "EmailNotification": {
+      "title": "EmailNotification",
+      "description": "Simulated system email dispatch record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique mail identifier." },
+        "recipientEmail": { "type": "string", "format": "email", "description": "Email address of the recipient." },
+        "subject": { "type": "string", "description": "Email subject header." },
+        "body": { "type": "string", "description": "Full text body content." },
+        "sentAt": { "type": "string", "format": "date-time", "description": "ISO timestamp when sent." },
+        "type": { "type": "string", "enum": ["missing_shift", "overtime", "password_reset", "system"], "description": "Email category." },
+        "read": { "type": "boolean", "description": "Indicates whether user has read this notification." }
+      },
+      "required": ["id", "recipientEmail", "subject", "body", "sentAt", "type", "read"]
+    },
+    "LeaveDay": {
+      "title": "LeaveDay",
+      "description": "A leave request or planned absence.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique leave day identifier." },
+        "userId": { "type": "string", "description": "ID of employee requesting leave." },
+        "userName": { "type": "string", "description": "Name of employee requesting leave." },
+        "date": { "type": "string", "format": "date", "description": "YYYY-MM-DD date of planned absence." },
+        "type": { "type": "string", "enum": ["Annual", "Emergency", "Sick", "Unpaid"], "description": "Leave type." },
+        "status": { "type": "string", "enum": ["Approved", "Pending", "Rejected"], "description": "Leave approval status." },
+        "note": { "type": "string", "description": "Reason or context note for leave request." }
+      },
+      "required": ["id", "userId", "userName", "date", "type", "status", "note"]
+    },
+    "LeaveQuota": {
+      "title": "LeaveQuota",
+      "description": "Allocated leave balances for an employee user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "ID of employee user." },
+        "userName": { "type": "string", "description": "Name of employee user." },
+        "annual": { "type": "number", "description": "Remaining annual leave days." },
+        "emergency": { "type": "number", "description": "Remaining emergency leave days." },
+        "sick": { "type": "number", "description": "Remaining sick leave days." }
+      },
+      "required": ["userId", "userName", "annual", "emergency", "sick"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of employee and manager user accounts."
+    },
+    "/officeSites/{siteId}": {
+      "schema": "OfficeSite",
+      "description": "Collection of gated office zones."
+    },
+    "/punchLogs/{punchId}": {
+      "schema": "PunchLog",
+      "description": "Attendance history log records."
+    },
+    "/activityLogs/{logId}": {
+      "schema": "ActivityLog",
+      "description": "Administrative actions audit log feed."
+    },
+    "/emails/{emailId}": {
+      "schema": "EmailNotification",
+      "description": "Simulated dispatch mailbox notifications."
+    },
+    "/leaveDays/{leaveId}": {
+      "schema": "LeaveDay",
+      "description": "Leave planning absence requests."
+    },
+    "/leaveQuotas/{quotaId}": {
+      "schema": "LeaveQuota",
+      "description": "Individual leave quota allocations."
+    }
+  }
+}

@@ -1,0 +1,280 @@
+import React, { useState, useEffect } from 'react';
+import { Store } from './utils/store';
+import { User } from './types';
+import Sidebar from './components/Sidebar';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import PunchClock from './components/PunchClock';
+import OfficeManagement from './components/OfficeManagement';
+import EmployeeManagement from './components/EmployeeManagement';
+import Reports from './components/Reports';
+import Logs from './components/Logs';
+import EmailInboxSim from './components/EmailInboxSim';
+import LeavePlanner from './components/LeavePlanner';
+
+import { ShieldCheck, CheckCircle2, AlertTriangle, Bell, Mail, RefreshCw, Sparkles, Menu } from 'lucide-react';
+
+export default function App() {
+  const [currentUser, setCurrentUser] = useState<User | null>(() => Store.getCurrentUser());
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [unreadEmailsCount, setUnreadEmailsCount] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Collapsed/hidden by default
+  const [syncTrigger, setSyncTrigger] = useState(0);
+
+  // Subscribe to real-time Firestore updates
+  useEffect(() => {
+    const unsubscribe = Store.subscribeToAll(() => {
+      setSyncTrigger(prev => prev + 1);
+      
+      // Real-time synchronization of the active session
+      const cached = Store.getCurrentUser();
+      if (cached) {
+        const users = Store.getUsers();
+        const fresh = users.find(u => u.id === cached.id);
+        if (fresh) {
+          if (fresh.status === 'suspended') {
+            setCurrentUser(null);
+            Store.saveCurrentUser(null);
+          } else {
+            setCurrentUser(fresh);
+          }
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Password reset override from URL (e.g. ?resetUserId=user-emp1)
+  const [resetUserIdOverride, setResetUserIdOverride] = useState<string | null>(null);
+
+  // Administrative Audit Feedbacks
+  const [auditFeedback, setAuditFeedback] = useState<{ count: number; active: boolean } | null>(null);
+
+  // Parse URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const resetUserId = params.get('resetUserId');
+    if (resetUserId) {
+      setResetUserIdOverride(resetUserId);
+      setCurrentUser(null); // Log out active session to process password reset securely
+      Store.saveCurrentUser(null);
+    }
+  }, []);
+
+  // Sync Unread Email Alerts
+  const refreshUnreadEmails = () => {
+    const list = Store.getEmails();
+    if (currentUser) {
+      const isManager = currentUser.role === 'admin';
+      const myUnreads = list.filter(e => 
+        !e.read && (isManager || e.recipientEmail.toLowerCase() === currentUser.email.toLowerCase())
+      );
+      setUnreadEmailsCount(myUnreads.length);
+    } else {
+      setUnreadEmailsCount(0);
+    }
+  };
+
+  useEffect(() => {
+    refreshUnreadEmails();
+    const interval = setInterval(refreshUnreadEmails, 2000);
+    return () => clearInterval(interval);
+  }, [currentUser]);
+
+  const handleLoginSuccess = (user: User) => {
+    setCurrentUser(user);
+    setActiveTab('dashboard');
+    // Clear URL parameters elegantly
+    if (window.history.pushState) {
+      const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.pushState({ path: newurl }, '', newurl);
+    }
+    setResetUserIdOverride(null);
+  };
+
+  const handleLogout = () => {
+    if (currentUser) {
+      Store.logActivity(
+        currentUser.id,
+        currentUser.name,
+        currentUser.role,
+        'USER_LOGOUT',
+        'Logged out and terminated CRM session.'
+      );
+    }
+    setCurrentUser(null);
+    Store.saveCurrentUser(null);
+    setActiveTab('dashboard');
+  };
+
+  // Run Shift Auditing (Manager only action)
+  const handleTriggerShiftAudit = () => {
+    if (!currentUser || currentUser.role !== 'admin') return;
+
+    // Run compliance auditing
+    const count = Store.runShiftAudit(currentUser.name, currentUser.id);
+    
+    // Display pop up feedback alert
+    setAuditFeedback({ count, active: true });
+    
+    // Auto clear feedback after 5 seconds
+    setTimeout(() => {
+      setAuditFeedback(null);
+    }, 5000);
+  };
+
+  // Switch workspace screens
+  const renderActiveScreen = () => {
+    if (!currentUser) return null;
+
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard currentUser={currentUser} onNavigateToTab={(tab) => setActiveTab(tab)} />;
+      case 'clock':
+        return <PunchClock currentUser={currentUser} />;
+      case 'calendar':
+        return <LeavePlanner currentUser={currentUser} />;
+      case 'reports':
+        return <Reports currentUser={currentUser} />;
+      case 'locations':
+        return currentUser.role === 'admin' ? <OfficeManagement currentUser={currentUser} /> : null;
+      case 'employees':
+        return currentUser.role === 'admin' ? <EmployeeManagement currentUser={currentUser} /> : null;
+      case 'logs':
+        return currentUser.role === 'admin' ? <Logs currentUser={currentUser} /> : null;
+      case 'emails':
+        return (
+          <EmailInboxSim
+            onTriggerResetFlow={(userId) => {
+              setResetUserIdOverride(userId);
+              setCurrentUser(null);
+              Store.saveCurrentUser(null);
+            }}
+            currentUserEmail={currentUser.email}
+            isAdmin={currentUser.role === 'admin'}
+          />
+        );
+      default:
+        return <Dashboard currentUser={currentUser} onNavigateToTab={(tab) => setActiveTab(tab)} />;
+    }
+  };
+
+  // If no user session, show login screen
+  if (!currentUser) {
+    return (
+      <Login
+        onLoginSuccess={handleLoginSuccess}
+        overrideResetUserId={resetUserIdOverride}
+        onClearOverrideReset={() => {
+          setResetUserIdOverride(null);
+          if (window.history.pushState) {
+            const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({ path: newurl }, '', newurl);
+          }
+        }}
+      />
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-950 flex flex-col lg:flex-row font-sans overflow-x-hidden relative">
+
+      {/* RENDER SIDEBAR */}
+      <Sidebar
+        currentUser={currentUser}
+        activeTab={activeTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          // Auto close menu drawer on mobile screens for UX ease
+          if (window.innerWidth < 1024) {
+            setIsSidebarOpen(false);
+          }
+        }}
+        onLogout={handleLogout}
+        unreadEmailCount={unreadEmailsCount}
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+      />
+
+      {/* CORE CONTENT LAYOUT AREA */}
+      <main className="flex-1 flex flex-col relative z-10 min-w-0 bg-[#f5f5f7]/50">
+        
+        {/* Dynamic header row containing quick status checks, menu toggle, and manual shift-audit triggers */}
+        <header className="h-16 border-b border-gray-150 bg-white flex items-center justify-between px-6 shrink-0 shadow-[0_1px_2px_rgba(0,0,0,0.01)]">
+          <div className="flex items-center gap-3">
+            {/* Toggle Button to open menu */}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="px-3.5 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200/60 rounded-xl text-gray-800 transition flex items-center justify-center gap-2 group font-medium text-xs tracking-tight"
+              title={isSidebarOpen ? "Collapse Navigation Menu" : "Expand Navigation Menu"}
+            >
+              <Menu className={`h-4 w-4 text-gray-600 group-hover:rotate-12 transition-transform duration-200`} />
+              <span>Menu</span>
+            </button>
+            
+            <div className="h-4 w-px bg-gray-200"></div>
+
+            <div className="flex items-center gap-1.5 bg-emerald-50/60 border border-emerald-100 px-2.5 py-1 rounded-full">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-medium text-emerald-700 uppercase tracking-wider hidden sm:inline">
+                Secure Link
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            
+            {/* AUDIT TRIGGER (Admins only) */}
+            {currentUser.role === 'admin' && (
+              <button
+                onClick={handleTriggerShiftAudit}
+                className="px-3.5 py-1.5 bg-white hover:bg-gray-50 text-gray-800 text-xs font-medium border border-gray-200 rounded-xl transition flex items-center gap-1.5 shadow-xs"
+                title="Run Automated Compliance Scan"
+              >
+                <RefreshCw className="h-3.5 w-3.5 text-gray-500 shrink-0" />
+                <span>Shift Audit</span>
+              </button>
+            )}
+
+            {/* Unread email bell notification indicator */}
+            <button
+              onClick={() => setActiveTab('emails')}
+              className="relative p-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition shadow-xs"
+              title="Mailroom Simulation"
+            >
+              <Bell className="h-4 w-4" />
+              {unreadEmailsCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-blue-600 text-[8px] text-white rounded-full flex items-center justify-center font-bold">
+                  {unreadEmailsCount}
+                </span>
+              )}
+            </button>
+          </div>
+        </header>
+
+        {/* FEEDBACK TOAST FROM SHIFT AUDIT */}
+        {auditFeedback && (
+          <div className="mx-6 mt-4 p-4 bg-white border border-emerald-100 rounded-2xl flex items-start gap-3 animate-slide-in text-xs text-left shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+            <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-gray-900 tracking-tight">Compliance Audit Complete</p>
+              <p className="text-gray-500 mt-1 text-[11px] leading-relaxed">
+                Audited active employee sessions. Identified <strong className="text-gray-950 font-semibold">{auditFeedback.count}</strong> unresolved clock-ins and dispatched notifications.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* MAIN BODY AREA */}
+        <div className="flex-1 p-6 overflow-y-auto max-w-[1400px] w-full mx-auto">
+          {renderActiveScreen()}
+        </div>
+
+      </main>
+
+    </div>
+  );
+}
