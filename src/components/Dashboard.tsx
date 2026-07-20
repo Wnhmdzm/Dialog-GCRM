@@ -36,6 +36,36 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
     return () => clearInterval(interval);
   }, []);
 
+  // Compute nearest office site geofence status dynamically
+  let gpsStatusLabel = currentLocation.name;
+  let activeOffice: OfficeSite | null = null;
+  let nearestOffice: OfficeSite | null = null;
+  let minDistanceMeters = Infinity;
+
+  offices.forEach(office => {
+    const dist = getDistanceMeters(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      office.latitude,
+      office.longitude
+    );
+    if (dist < minDistanceMeters) {
+      minDistanceMeters = dist;
+      nearestOffice = office;
+    }
+    if (dist <= office.radiusMeters) {
+      activeOffice = office;
+    }
+  });
+
+  if (activeOffice) {
+    gpsStatusLabel = `Authorized: ${activeOffice.name}`;
+  } else if (nearestOffice) {
+    gpsStatusLabel = `Away / Near ${nearestOffice.name} (${formatDistance(minDistanceMeters)})`;
+  } else {
+    gpsStatusLabel = currentLocation.name;
+  }
+
   // Filter logs based on search query and active filter tag
   const filteredLogs = logs.filter(log => {
     const isOwner = isAdmin || log.userId === currentUser.id;
@@ -330,7 +360,7 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
           <MapPin className="h-4 w-4 text-blue-500 shrink-0" />
           <div className="text-xs">
             <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-wider block leading-none">GPS Coordinates Status</span>
-            <span className="text-gray-900 font-medium block mt-1 leading-none">{currentLocation.name}</span>
+            <span className="text-gray-900 font-medium block mt-1 leading-none">{gpsStatusLabel}</span>
           </div>
         </div>
       </div>

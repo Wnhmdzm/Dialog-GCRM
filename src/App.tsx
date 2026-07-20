@@ -206,10 +206,8 @@ export default function App() {
             activeTab={activeTab}
             onTabChange={(tab) => {
               setActiveTab(tab);
-              // Auto close menu drawer on mobile screens for UX ease
-              if (window.innerWidth < 1024) {
-                setIsSidebarOpen(false);
-              }
+              // Auto close/minimize the menubar on all screens for seamless UX
+              setIsSidebarOpen(false);
             }}
             onLogout={handleLogout}
             unreadEmailCount={unreadEmailsCount}

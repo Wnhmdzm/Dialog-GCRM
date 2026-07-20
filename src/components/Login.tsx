@@ -49,7 +49,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
     }
   }, [overrideResetUserId]);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -81,6 +81,26 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
       setNewPassword('');
       setConfirmPassword('');
       return;
+    }
+
+    // Authenticate/sync with Firebase Auth so that the real console "Signed In" column updates!
+    try {
+      const { signInWithEmailAndPassword, createUserWithEmailAndPassword } = await import('firebase/auth');
+      const { auth } = await import('../lib/firebase');
+      try {
+        await signInWithEmailAndPassword(auth, matchedUser.email, password);
+      } catch (signInErr: any) {
+        // If the user doesn't exist in Firebase Auth yet, dynamically register them to match
+        if (signInErr.code === 'auth/user-not-found' || signInErr.code === 'auth/invalid-credential' || signInErr.message.includes('not-found')) {
+          try {
+            await createUserWithEmailAndPassword(auth, matchedUser.email, password);
+          } catch (createErr) {
+            console.warn("Auto-creation in Firebase Auth failed:", createErr);
+          }
+        }
+      }
+    } catch (authError) {
+      console.warn("Firebase Authentication synchronization omitted:", authError);
     }
 
     // Direct Login Successful

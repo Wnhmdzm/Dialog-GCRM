@@ -132,11 +132,11 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Mobile close menu button */}
+        {/* Minimize menu button */}
         <button
           onClick={onToggle}
-          className="lg:hidden p-1.5 rounded-xl bg-gray-150/70 hover:bg-gray-200/80 text-gray-600 transition"
-          title="Close Navigation Drawer"
+          className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition flex items-center justify-center border border-gray-200/50"
+          title="Minimize Navigation Menu"
         >
           <X className="h-4 w-4" />
         </button>
