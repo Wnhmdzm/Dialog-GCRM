@@ -1,23 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDocFromServer } from "firebase/firestore";
+import firebaseConfig from "../../firebase-applet-config.json";
 
-// Web app's Firebase configuration provided by the user
-const firebaseConfig = {
-  apiKey: "AIzaSyCEgjBl3Yvi3ooKPCr1CK1dmSqX5wEJEiE",
-  authDomain: "dialog-gcrm.firebaseapp.com",
-  projectId: "dialog-gcrm",
-  storageBucket: "dialog-gcrm.firebasestorage.app",
-  messagingSenderId: "197289154909",
-  appId: "1:197289154909:web:6ff08f287b9203c88e30b4",
-  measurementId: "G-7SGQCS7NY6"
-};
-
-// Initialize Firebase
+// Initialize Firebase with configuration loaded dynamically from firebase-applet-config.json
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore & Authentication as specified in guidelines
-export const db = getFirestore(app);
+export const db = getFirestore(app, (firebaseConfig as any).firestoreDatabaseId);
 export const auth = getAuth(app);
 
 // Operational types for Firestore error formatting

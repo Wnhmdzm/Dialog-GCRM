@@ -128,7 +128,7 @@ export default function Reports({ currentUser }: ReportsProps) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `GeoClock_Weekly_Manhours_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `POBS_Weekly_Manhours_Report_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

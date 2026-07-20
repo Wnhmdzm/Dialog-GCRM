@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../types';
-import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X } from 'lucide-react';
+import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface SidebarProps {
@@ -51,6 +51,12 @@ export default function Sidebar({
       adminOnly: false
     },
     {
+      id: 'evacuation',
+      label: 'Vacuation Panel',
+      icon: <Flame className="h-4 w-4 text-rose-500" />,
+      adminOnly: false
+    },
+    {
       id: 'locations',
       label: 'Geofence Boundaries',
       icon: <MapPin className="h-4 w-4" />,
@@ -74,6 +80,12 @@ export default function Sidebar({
       icon: <Mail className="h-4 w-4" />,
       adminOnly: false,
       badge: unreadEmailCount > 0 ? unreadEmailCount : undefined
+    },
+    {
+      id: 'profile',
+      label: 'My Profile',
+      icon: <UserIcon className="h-4 w-4" />,
+      adminOnly: false
     }
   ];
 
@@ -187,7 +199,7 @@ export default function Sidebar({
 
         <div className="pt-2 select-none">
           <p className="text-[9px] text-gray-400 font-medium">
-            Build by <strong className="text-gray-600 font-bold">Khairumi Kasim, HSE Engineer</strong>
+            Built by <strong className="text-gray-600 font-bold">Khairumi Kasim, HSE Engineer</strong>
           </p>
         </div>
       </div>

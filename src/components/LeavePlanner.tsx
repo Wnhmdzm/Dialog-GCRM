@@ -186,9 +186,9 @@ export default function LeavePlanner({ currentUser }: LeavePlannerProps) {
       `Leave request submitted for ${targetUser.name} on ${formattedDate} (${requestType}). Status: ${newLeave.status}`
     );
 
-    if (!isAdmin) {
+        if (!isAdmin) {
       Store.sendEmail(
-        'admin@geoclock.com',
+        'khairumi.kasim@dialogasia.com',
         `📅 New Leave Request: ${targetUser.name}`,
         `Hello Admin,\n\n${targetUser.name} has submitted a request for ${requestType} Leave on ${formattedDate}.\n\nNote: "${newLeave.note}"\n\nPlease log in to Dialog CRM's Leave Planner to approve or deny this request.`,
         'system'
@@ -566,7 +566,7 @@ export default function LeavePlanner({ currentUser }: LeavePlannerProps) {
                   }}
                   className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs outline-none transition font-medium text-gray-950 focus:ring-4 focus:ring-blue-500/5"
                 >
-                  <option value={currentUser.id}>Ahmad Zaim (Myself)</option>
+                  <option value={currentUser.id}>{currentUser.name} (Myself)</option>
                   {employees.map(e => (
                     <option key={e.id} value={e.id}>{e.name} (Employee)</option>
                   ))}

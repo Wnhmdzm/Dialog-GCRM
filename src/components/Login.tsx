@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Store } from '../utils/store';
 import { User } from '../types';
-import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText } from 'lucide-react';
+import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText, Flame } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface LoginProps {
@@ -27,7 +27,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
   // Manual Book modal states
   const [isManualOpen, setIsManualOpen] = useState(false);
-  const [manualTab, setManualTab] = useState<'overview' | 'admin' | 'employee' | 'simulator'>('overview');
+  const [manualTab, setManualTab] = useState<'overview' | 'admin' | 'employee' | 'simulator' | 'evacuation'>('overview');
 
   // Direct Reset via URL/State link flow
   const [directResetUser, setDirectResetUser] = useState<User | null>(() => {
@@ -160,7 +160,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
     // Admin reset request simulation (sends email reset link)
     const resetUrl = `${window.location.origin}${window.location.pathname}?resetUserId=${targetUser.id}`;
-    const mailBody = `Hello ${targetUser.name},\n\nA password reset request was triggered for your GeoClock CRM profile.\n\nYou can click the link below to securely reset your password:\n${resetUrl}\n\nIf you did not request this, please contact your administrator.\n\nRegards,\nGeoClock CRM Support`;
+    const mailBody = `Hello ${targetUser.name},\n\nA password reset request was triggered for your Personnel On Board System profile.\n\nYou can click the link below to securely reset your password:\n${resetUrl}\n\nIf you did not request this, please contact your administrator.\n\nRegards,\nPersonnel On Board System Support`;
 
     Store.sendEmail(
       targetUser.email,
@@ -242,7 +242,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             <DialogLogo size="lg" />
           </div>
           <h1 className="text-xl font-bold tracking-tight text-gray-900 leading-none">
-            HSE & Geofenced Attendance CRM
+            Personnel On Board System
           </h1>
           <p className="text-gray-400 text-[10px] mt-2.5 font-bold uppercase tracking-widest leading-none">Attendance & Personal Leave Planner Hub</p>
         </div>
@@ -402,7 +402,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   <input
                     id="login_email_field"
                     type="email"
-                    placeholder="email@geoclock.com"
+                    placeholder="email@dialogasia.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
@@ -460,7 +460,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </label>
                   <input
                     type="email"
-                    placeholder="email@geoclock.com"
+                    placeholder="email@dialogasia.com"
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
@@ -488,35 +488,35 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             {/* Quick Demo Login Presets */}
             <div className="mt-6 pt-5 border-t border-gray-100 text-left">
               <p className="text-gray-400 text-[10px] text-center font-semibold uppercase tracking-wider mb-3">Quick Demo Presets</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
-                  onClick={() => selectMockUser('admin@geoclock.com', 'Admin123')}
-                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group"
+                  onClick={() => selectMockUser('khairumi.kasim@dialogasia.com', 'Dialog123')}
+                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group text-slate-900"
                 >
-                  <span className="text-[11px] font-medium text-gray-950 flex items-center gap-1">
-                    <UserCheck className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-                    Manager / Admin
+                  <span className="text-[11px] font-semibold text-rose-700 flex items-center gap-1">
+                    <UserCheck className="h-3.5 w-3.5 text-rose-500 shrink-0" />
+                    Khairumi (HSE Engineer)
                   </span>
-                  <span className="text-[10px] text-gray-400 truncate mt-1">admin@geoclock.com</span>
+                  <span className="text-[10px] text-gray-400 truncate mt-1">khairumi.kasim@dialogasia.com</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => selectMockUser('john@geoclock.com', 'Dialog123')}
+                  onClick={() => selectMockUser('john@dialogasia.com', 'Dialog123')}
                   className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group"
                 >
                   <span className="text-[11px] font-medium text-amber-600 flex items-center gap-1">
                     <UserCheck className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                     John (First Reset)
                   </span>
-                  <span className="text-[10px] text-gray-400 truncate mt-1">john@geoclock.com</span>
+                  <span className="text-[10px] text-gray-400 truncate mt-1">john@dialogasia.com</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => selectMockUser('sarah@geoclock.com', 'Sarah123')}
-                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group col-span-1 sm:col-span-2"
+                  onClick={() => selectMockUser('sarah@dialogasia.com', 'Dialog123')}
+                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group"
                 >
                   <span className="text-[11px] font-medium text-emerald-700 flex items-center gap-1 justify-between">
                     <span className="flex items-center gap-1">
@@ -525,7 +525,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     </span>
                     <span className="text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full font-medium">Active</span>
                   </span>
-                  <span className="text-[10px] text-gray-400 mt-1">sarah@geoclock.com</span>
+                  <span className="text-[10px] text-gray-400 mt-1">sarah@dialogasia.com</span>
                 </button>
               </div>
             </div>
@@ -540,7 +540,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-150 rounded-2xl text-gray-700 font-medium text-xs tracking-tight shadow-sm transition-all"
           >
             <BookOpen className="h-4 w-4 text-blue-500 shrink-0" />
-            <span>Interactive CRM Manual & Role Guide</span>
+            <span>Personnel On Board System Manual & Role Guide</span>
           </button>
 
           {/* Developer Credit */}
@@ -560,7 +560,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-blue-500 shrink-0" />
-                <h3 className="text-base font-semibold text-gray-950 tracking-tight">GeoClock CRM Interactive Guide</h3>
+                <h3 className="text-base font-semibold text-gray-950 tracking-tight">Personnel On Board System Guide</h3>
               </div>
               <button
                 onClick={() => setIsManualOpen(false)}
@@ -620,15 +620,27 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <RefreshCw className="h-3.5 w-3.5" />
                 Simulator Guide
               </button>
+
+              <button
+                onClick={() => setManualTab('evacuation')}
+                className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all duration-150 ${
+                  manualTab === 'evacuation'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                <Flame className="h-3.5 w-3.5 text-rose-500" />
+                Muster & Evac
+              </button>
             </div>
 
             {/* Modal Body Scroll Area */}
             <div className="p-6 overflow-y-auto space-y-4 text-sm text-gray-600 leading-relaxed max-h-[55vh]">
               {manualTab === 'overview' && (
                 <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">🌍 Welcome to Dialog GeoClock CRM</h4>
+                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">🌍 Welcome to Personnel On Board System</h4>
                   <p>
-                    Dialog GeoClock is an advanced, compliant attendance and personal leave management system styled with elegant Swiss-minimalist aesthetics.
+                    The Personnel On Board System is an advanced, compliant attendance and personal leave management system styled with elegant Swiss-minimalist aesthetics.
                   </p>
                   <p>
                     The system implements strict **physical GPS geofencing**. Employees are prevented from checking in or checking out unless they are physically present within the allowed entry radius of authorized corporate office coordinates.
@@ -646,7 +658,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <div className="space-y-3 animate-fade-in">
                   <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">👑 Manager & Administrator Guide</h4>
                   <p>
-                    Log in as <strong className="text-gray-900 font-medium">admin@geoclock.com</strong> (Password: <code className="bg-gray-50 px-1.5 py-0.5 border border-gray-150 text-gray-700 rounded-md">Admin123</code>) to access global CRM modules:
+                    Log in as <strong className="text-gray-900 font-medium">khairumi.kasim@dialogasia.com</strong> (Password: <code className="bg-gray-50 px-1.5 py-0.5 border border-gray-150 text-gray-700 rounded-md">Dialog123</code>) to access global CRM modules:
                   </p>
                   <ul className="list-disc pl-5 space-y-2">
                     <li>
@@ -669,7 +681,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <div className="space-y-3 animate-fade-in">
                   <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">💼 Employee & Staff User Guide</h4>
                   <p>
-                    Select an employee like <strong className="text-gray-900 font-medium">Sarah Jenkins</strong> (Sarah123) or <strong className="text-gray-900 font-medium">John Doe</strong> (Dialog123) to interact as staff:
+                    Select an employee like <strong className="text-gray-900 font-medium">Sarah Jenkins</strong> (Dialog123) or <strong className="text-gray-900 font-medium">John Doe</strong> (Dialog123) to interact as staff:
                   </p>
                   <ul className="list-disc pl-5 space-y-2">
                     <li>
@@ -697,6 +709,29 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     </li>
                     <li>
                       <strong>Virtual Mail Room inbox:</strong> Access simulated email dispatches (bell icon). This lets you inspect system mail, like the password reset credentials generated for first-time employee onboarding.
+                    </li>
+                  </ul>
+                </div>
+              )}
+
+              {manualTab === 'evacuation' && (
+                <div className="space-y-3 animate-fade-in">
+                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">🚨 Emergency Evacuation & Muster Protocol</h4>
+                  <p>
+                    The CRM system features a real-time **Emergency Evacuation Control Center** to ensure physical personnel accountability during a hazard event or standard fire drill.
+                  </p>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li>
+                      <strong>Triggering Evacuations (Managers):</strong> Admins can launch a muster-point check for any coordinate sector. Clocked-in personnel instantly receive high-priority alerts and critical dispatch email orders.
+                    </li>
+                    <li>
+                      <strong>Muster Registration (Staff):</strong> Clocked-in employees must evacuate immediately to the designated assembly zone, where they can click <strong>"Mark Myself Safe"</strong> or present their auto-generated <strong>Warden QR Identifier</strong>.
+                    </li>
+                    <li>
+                      <strong>Warden Muster Scan:</strong> Safety Wardens use the <strong>Assembly Point Scanner</strong> (with simulated camera stream or manual token registration) to log evacuated individuals as <strong>Verified Safe</strong>.
+                    </li>
+                    <li>
+                      <strong>Compliance Reporting:</strong> The active muster register tracks live metrics (Total Site Personnel, Registered Safe, and Missing Count) and is fully exportable to CSV for rescue teams and HSE compliance records.
                     </li>
                   </ul>
                 </div>

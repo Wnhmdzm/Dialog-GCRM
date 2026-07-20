@@ -319,7 +319,7 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
           </h2>
           <p className="text-[11px] text-gray-500 mt-1 font-normal">
             {isAdmin 
-              ? 'Authorized Administrator Profile: Ahmad Zaim. Gated geo-tracking active.'
+              ? `Authorized Administrator Profile: ${currentUser.name}. Gated geo-tracking active.`
               : `Welcome Back, Employee Associate: ${currentUser.name}.`
             }
           </p>

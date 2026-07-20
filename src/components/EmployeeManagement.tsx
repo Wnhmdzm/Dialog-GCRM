@@ -78,8 +78,8 @@ export default function EmployeeManagement({ currentUser, onRefreshStats }: Empl
     // Send Welcome Email Simulation
     Store.sendEmail(
       newEmployee.email,
-      '👋 Welcome to GeoClock CRM - Your Temporary Credentials',
-      `Hello ${newEmployee.name},\n\nYour profile has been successfully provisioned by ${currentUser.name}.\n\nYou can access the CRM at the link below:\n${window.location.origin}\n\nYour starting temporary password is:\nDialog123\n\nFor security compliance, you will be prompted to change this temporary password immediately upon your first login.\n\nRegards,\nGeoClock CRM Administration`,
+      '👋 Welcome to Personnel On Board System - Your Temporary Credentials',
+      `Hello ${newEmployee.name},\n\nYour profile has been successfully provisioned by ${currentUser.name}.\n\nYou can access the system at the link below:\n${window.location.origin}\n\nYour starting temporary password is:\nDialog123\n\nFor security compliance, you will be prompted to change this temporary password immediately upon your first login.\n\nRegards,\nPersonnel On Board System Administration`,
       'system'
     );
 
@@ -150,7 +150,7 @@ export default function EmployeeManagement({ currentUser, onRefreshStats }: Empl
   const handleAdminResetTrigger = (id: string, employeeName: string, employeeEmail: string) => {
     // Admin triggers a password reset email simulation
     const resetUrl = `${window.location.origin}${window.location.pathname}?resetUserId=${id}`;
-    const mailBody = `Hello ${employeeName},\n\nAn administrator (${currentUser.name}) has initiated a password reset request for your GeoClock CRM profile.\n\nYou can click the link below to securely reset your password:\n${resetUrl}\n\nIf you did not request this, please contact support.\n\nRegards,\nGeoClock CRM Administration`;
+    const mailBody = `Hello ${employeeName},\n\nAn administrator (${currentUser.name}) has initiated a password reset request for your Personnel On Board System profile.\n\nYou can click the link below to securely reset your password:\n${resetUrl}\n\nIf you did not request this, please contact support.\n\nRegards,\nPersonnel On Board System Administration`;
 
     Store.sendEmail(
       employeeEmail,
@@ -334,7 +334,7 @@ export default function EmployeeManagement({ currentUser, onRefreshStats }: Empl
               <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Corporate Email</label>
               <input
                 type="email"
-                placeholder="e.g. michael@geoclock.com"
+                placeholder="e.g. michael@dialogasia.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs outline-none transition focus:bg-white text-gray-950 font-mono font-medium focus:ring-4 focus:ring-blue-500/5"

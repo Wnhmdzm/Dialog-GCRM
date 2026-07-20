@@ -1,4 +1,4 @@
-import { User, OfficeSite, PunchLog, ActivityLog, EmailNotification, SimulatedLocation, LeaveDay, LeaveQuota } from '../types';
+import { User, OfficeSite, PunchLog, ActivityLog, EmailNotification, SimulatedLocation, LeaveDay, LeaveQuota, EvacuationEvent, EvacuationMember } from '../types';
 import { INITIAL_USERS, INITIAL_USER_PASSWORDS, INITIAL_OFFICES, INITIAL_PUNCH_LOGS, INITIAL_ACTIVITY_LOGS, INITIAL_EMAILS } from '../mockData';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, doc, setDoc, getDocs, deleteDoc, onSnapshot } from 'firebase/firestore';
@@ -14,6 +14,8 @@ const KEY_EMAILS = 'geoclock_emails';
 const KEY_LOCATION = 'geoclock_simulated_location';
 const KEY_LEAVE_DAYS = 'geoclock_leave_days';
 const KEY_LEAVE_QUOTAS = 'geoclock_leave_quotas';
+const KEY_EVACUATION_EVENTS = 'geoclock_evacuation_events';
+const KEY_EVACUATION_MEMBERS = 'geoclock_evacuation_members';
 
 export class Store {
   private static unsubscribes: (() => void)[] = [];
@@ -91,6 +93,42 @@ export class Store {
         
         console.log("Firebase Firestore successfully bootstrapped with default CRM schema.");
       }
+
+      // Ensure Khairumi Kasim exists as an admin in Firebase unconditionally (as requested by user)
+      const khairumiUser: User = {
+        id: 'user-khairumi',
+        name: 'Khairumi Kasim (HSE Engineer)',
+        email: 'khairumi.kasim@dialogasia.com',
+        role: 'admin',
+        joinedAt: '2026-07-20T08:00:00Z',
+        firstTimePasswordChangeRequired: false,
+        status: 'active',
+        avatarUrl: 'https://hoirqrkdgbmvpwutwuwj-all.supabase.co/storage/v1/object/public/assets/assets/ea777f21-df8c-431d-956a-57390ff9e591_320w.jpg'
+      };
+      await setDoc(doc(db, 'users', khairumiUser.id), khairumiUser);
+      await setDoc(doc(db, 'passwords', khairumiUser.id), { password: 'Dialog123' });
+      await setDoc(doc(db, 'leaveQuotas', khairumiUser.id), {
+        userId: khairumiUser.id,
+        userName: khairumiUser.name,
+        annual: 14,
+        emergency: 5,
+        sick: 10
+      });
+
+      // Clean up the legacy user-admin account from Firebase so it is fully deleted
+      try {
+        const { deleteDoc } = await import('firebase/firestore');
+        await deleteDoc(doc(db, 'users', 'user-admin'));
+        await deleteDoc(doc(db, 'passwords', 'user-admin'));
+        await deleteDoc(doc(db, 'leaveQuotas', 'user-admin'));
+      } catch (err) {
+        console.warn("Could not delete old admin account documents:", err);
+      }
+
+      // Synchronize all preset user passwords in Firestore unconditionally to ensure they match "Dialog123"
+      for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
+        await setDoc(doc(db, 'passwords', id), { password: pass });
+      }
     } catch (error) {
       console.warn("Auto-seeding skipped (permission rules active or network pending).", error);
     }
@@ -109,6 +147,8 @@ export class Store {
       { name: 'emails', key: KEY_EMAILS, defaultValue: INITIAL_EMAILS },
       { name: 'leaveDays', key: KEY_LEAVE_DAYS, defaultValue: [] },
       { name: 'leaveQuotas', key: KEY_LEAVE_QUOTAS, defaultValue: [] },
+      { name: 'evacuationEvents', key: KEY_EVACUATION_EVENTS, defaultValue: [] },
+      { name: 'evacuationMembers', key: KEY_EVACUATION_MEMBERS, defaultValue: [] },
     ];
 
     collections.forEach(col => {
@@ -366,7 +406,7 @@ export class Store {
             this.sendEmail(
               user.email,
               '🚨 Action Required: Missing Clock-Out Detected',
-              `Hello ${user.name},\n\nOur CRM shift audit has flagged a missing clock-out. You clocked in on ${new Date(lastPunch.timestamp).toLocaleDateString()} at ${new Date(lastPunch.timestamp).toLocaleTimeString()} but never clocked out.\n\nPlease contact your administrator (${actorName}) or open the GeoClock app to reconcile your hours.\n\nBest,\nGeoClock Automated Audit System`,
+              `Hello ${user.name},\n\nOur POBS shift audit has flagged a missing clock-out. You clocked in on ${new Date(lastPunch.timestamp).toLocaleDateString()} at ${new Date(lastPunch.timestamp).toLocaleTimeString()} but never clocked out.\n\nPlease contact your administrator (${actorName}) or open the Personnel On Board System app to reconcile your hours.\n\nBest,\nPersonnel On Board Automated Audit System`,
               'missing_shift'
             );
             alertCount++;
@@ -394,5 +434,34 @@ export class Store {
     }
     
     return alertCount;
+  }
+
+  // --- Evacuation Operations ---
+  static getEvacuationEvents(): EvacuationEvent[] {
+    const data = localStorage.getItem(KEY_EVACUATION_EVENTS);
+    if (!data) {
+      localStorage.setItem(KEY_EVACUATION_EVENTS, JSON.stringify([]));
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  static saveEvacuationEvents(events: EvacuationEvent[]) {
+    localStorage.setItem(KEY_EVACUATION_EVENTS, JSON.stringify(events));
+    this.syncCollectionWrite('evacuationEvents', events);
+  }
+
+  static getEvacuationMembers(): EvacuationMember[] {
+    const data = localStorage.getItem(KEY_EVACUATION_MEMBERS);
+    if (!data) {
+      localStorage.setItem(KEY_EVACUATION_MEMBERS, JSON.stringify([]));
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  static saveEvacuationMembers(members: EvacuationMember[]) {
+    localStorage.setItem(KEY_EVACUATION_MEMBERS, JSON.stringify(members));
+    this.syncCollectionWrite('evacuationMembers', members);
   }
 }

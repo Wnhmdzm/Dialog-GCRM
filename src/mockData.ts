@@ -2,11 +2,11 @@ import { User, OfficeSite, PunchLog, ActivityLog, EmailNotification } from './ty
 
 export const INITIAL_USERS: User[] = [
   {
-    id: 'user-admin',
-    name: 'Ahmad Zaim (Manager)',
-    email: 'admin@geoclock.com',
+    id: 'user-khairumi',
+    name: 'Khairumi Kasim (HSE Engineer)',
+    email: 'khairumi.kasim@dialogasia.com',
     role: 'admin',
-    joinedAt: '2025-01-10T08:00:00Z',
+    joinedAt: '2026-07-20T08:00:00Z',
     firstTimePasswordChangeRequired: false,
     status: 'active',
     avatarUrl: 'https://hoirqrkdgbmvpwutwuwj-all.supabase.co/storage/v1/object/public/assets/assets/ea777f21-df8c-431d-956a-57390ff9e591_320w.jpg'
@@ -14,7 +14,7 @@ export const INITIAL_USERS: User[] = [
   {
     id: 'user-emp1',
     name: 'John Doe',
-    email: 'john@geoclock.com',
+    email: 'john@dialogasia.com',
     role: 'employee',
     joinedAt: '2026-07-10T09:00:00Z',
     firstTimePasswordChangeRequired: true, // Requires changing password from "Dialog123"
@@ -23,7 +23,7 @@ export const INITIAL_USERS: User[] = [
   {
     id: 'user-emp2',
     name: 'Sarah Jenkins',
-    email: 'sarah@geoclock.com',
+    email: 'sarah@dialogasia.com',
     role: 'employee',
     joinedAt: '2026-03-15T09:00:00Z',
     firstTimePasswordChangeRequired: false, // Has already changed password
@@ -32,7 +32,7 @@ export const INITIAL_USERS: User[] = [
   {
     id: 'user-emp3',
     name: 'Bob Smith',
-    email: 'bob@geoclock.com',
+    email: 'bob@dialogasia.com',
     role: 'employee',
     joinedAt: '2026-06-01T09:00:00Z',
     firstTimePasswordChangeRequired: true, // Needs first-time reset
@@ -41,9 +41,9 @@ export const INITIAL_USERS: User[] = [
 ];
 
 export const INITIAL_USER_PASSWORDS: Record<string, string> = {
-  'user-admin': 'Admin123',
+  'user-khairumi': 'Dialog123',
   'user-emp1': 'Dialog123',
-  'user-emp2': 'Sarah123',
+  'user-emp2': 'Dialog123',
   'user-emp3': 'Dialog123',
 };
 
@@ -88,7 +88,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-1',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'in',
     timestamp: getPastDateString(4, '08:55:00Z'),
     latitude: 37.77492,
@@ -103,7 +103,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-2',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'out',
     timestamp: getPastDateString(4, '17:35:00Z'),
     latitude: 37.77488,
@@ -121,7 +121,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-3',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'in',
     timestamp: getPastDateString(3, '08:30:00Z'),
     latitude: 37.77491,
@@ -136,7 +136,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-4',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'out',
     timestamp: getPastDateString(3, '19:00:00Z'),
     latitude: 37.77494,
@@ -154,7 +154,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-5',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'in',
     timestamp: getPastDateString(2, '09:00:00Z'),
     latitude: 37.7749,
@@ -169,7 +169,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-6',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'out',
     timestamp: getPastDateString(2, '17:00:00Z'),
     latitude: 37.7749,
@@ -187,7 +187,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-7',
     userId: 'user-emp3',
     userName: 'Bob Smith',
-    userEmail: 'bob@geoclock.com',
+    userEmail: 'bob@dialogasia.com',
     type: 'in',
     timestamp: getPastDateString(2, '08:50:00Z'),
     latitude: 51.5074,
@@ -204,7 +204,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-8',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'in',
     timestamp: getPastDateString(1, '09:02:00Z'),
     latitude: 37.7749,
@@ -219,7 +219,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-9',
     userId: 'user-emp2',
     userName: 'Sarah Jenkins',
-    userEmail: 'sarah@geoclock.com',
+    userEmail: 'sarah@dialogasia.com',
     type: 'out',
     timestamp: getPastDateString(1, '17:05:00Z'),
     latitude: 37.7749,
@@ -237,7 +237,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-10',
     userId: 'user-emp1',
     userName: 'John Doe',
-    userEmail: 'john@geoclock.com',
+    userEmail: 'john@dialogasia.com',
     type: 'in',
     timestamp: getPastDateString(1, '08:45:00Z'),
     latitude: 51.5074,
@@ -252,7 +252,7 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
     id: 'punch-11',
     userId: 'user-emp1',
     userName: 'John Doe',
-    userEmail: 'john@geoclock.com',
+    userEmail: 'john@dialogasia.com',
     type: 'out',
     timestamp: getPastDateString(1, '17:15:00Z'),
     latitude: 51.5074,
@@ -269,20 +269,20 @@ export const INITIAL_PUNCH_LOGS: PunchLog[] = [
 export const INITIAL_ACTIVITY_LOGS: ActivityLog[] = [
   {
     id: 'act-1',
-    userId: 'user-admin',
-    userName: 'Ahmad Zaim',
+    userId: 'user-khairumi',
+    userName: 'Khairumi Kasim',
     userRole: 'admin',
     action: 'SYSTEM_BOOT',
-    details: 'GeoClock CRM initial tables seeded successfully.',
+    details: 'Personnel On Board System initial tables seeded successfully.',
     timestamp: getPastDateString(5, '08:00:00Z')
   },
   {
     id: 'act-2',
-    userId: 'user-admin',
-    userName: 'Ahmad Zaim',
+    userId: 'user-khairumi',
+    userName: 'Khairumi Kasim',
     userRole: 'admin',
     action: 'USER_CREATE',
-    details: 'Created employee profile for John Doe (john@geoclock.com).',
+    details: 'Created employee profile for John Doe (john@dialogasia.com).',
     timestamp: getPastDateString(5, '09:15:00Z')
   },
   {
@@ -296,8 +296,8 @@ export const INITIAL_ACTIVITY_LOGS: ActivityLog[] = [
   },
   {
     id: 'act-4',
-    userId: 'user-admin',
-    userName: 'Ahmad Zaim',
+    userId: 'user-khairumi',
+    userName: 'Khairumi Kasim',
     userRole: 'admin',
     action: 'SITE_UPDATE',
     details: 'Updated geofencing radius for Sydney Waterfront Pier to 200m.',
@@ -308,18 +308,18 @@ export const INITIAL_ACTIVITY_LOGS: ActivityLog[] = [
 export const INITIAL_EMAILS: EmailNotification[] = [
   {
     id: 'mail-1',
-    recipientEmail: 'sarah@geoclock.com',
+    recipientEmail: 'sarah@dialogasia.com',
     subject: '⚠️ Overtime Notification Alert',
-    body: 'Hello Sarah Jenkins,\n\nYou logged 10.5 hours on Tuesday. This exceeds the standard daily shift threshold (8.0 hours). Your overtime of 2.5 hours has been recorded for manager review.\n\nRegards,\nGeoClock CRM Automation',
+    body: 'Hello Sarah Jenkins,\n\nYou logged 10.5 hours on Tuesday. This exceeds the standard daily shift threshold (8.0 hours). Your overtime of 2.5 hours has been recorded for manager review.\n\nRegards,\nPersonnel On Board System Automation',
     sentAt: getPastDateString(3, '19:15:00Z'),
     type: 'overtime',
     read: false
   },
   {
     id: 'mail-2',
-    recipientEmail: 'bob@geoclock.com',
+    recipientEmail: 'bob@dialogasia.com',
     subject: '🚨 Action Required: Missing Clock-Out Alert',
-    body: 'Hello Bob Smith,\n\nOur system detected that you clocked in at London Finance Core on Wednesday at 08:50, but did not register a clock-out. Please contact manager Ahmad Zaim to reconcile your man-hours.\n\nRegards,\nGeoClock CRM System',
+    body: 'Hello Bob Smith,\n\nOur system detected that you clocked in at London Finance Core on Wednesday at 08:50, but did not register a clock-out. Please contact manager Khairumi Kasim to reconcile your man-hours.\n\nRegards,\nPersonnel On Board System',
     sentAt: getPastDateString(1, '20:00:00Z'),
     type: 'missing_shift',
     read: false

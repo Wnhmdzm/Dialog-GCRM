@@ -147,7 +147,7 @@ export default function PunchClock({ currentUser, onPunchSuccess }: PunchClockPr
         Store.sendEmail(
           currentUser.email,
           '⚠️ Overtime Shift Alert Warning',
-          `Hello ${currentUser.name},\n\nYou logged ${hours} hours for your shift ending today at ${new Date(timestampStr).toLocaleTimeString()}.\n\nThis exceeds standard 8.0 hours. It has been marked as overtime and passed to administration for compensation approval.\n\nRegards,\nGeoClock CRM System`,
+          `Hello ${currentUser.name},\n\nYou logged ${hours} hours for your shift ending today at ${new Date(timestampStr).toLocaleTimeString()}.\n\nThis exceeds standard 8.0 hours. It has been marked as overtime and passed to administration for compensation approval.\n\nRegards,\nPersonnel On Board System`,
           'overtime'
         );
       }

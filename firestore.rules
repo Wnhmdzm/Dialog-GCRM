@@ -23,10 +23,10 @@ service cloud.firestore {
       return data.id is string && data.id.size() <= 128
         && data.name is string && data.name.size() <= 128
         && data.email is string && data.email.size() <= 128
-        && data.role in ['admin', 'employee']
+        && (data.role == 'admin' || data.role == 'employee')
         && data.joinedAt is string && data.joinedAt.size() <= 64
         && data.firstTimePasswordChangeRequired is bool
-        && data.status in ['active', 'suspended']
+        && (data.status == 'active' || data.status == 'suspended')
         && (!('avatarUrl' in data) || (data.avatarUrl is string && data.avatarUrl.size() <= 512));
     }
 
@@ -65,7 +65,7 @@ service cloud.firestore {
         && data.userId is string && data.userId.size() <= 128
         && data.userName is string && data.userName.size() <= 128
         && data.userEmail is string && data.userEmail.size() <= 128
-        && data.type in ['in', 'out']
+        && (data.type == 'in' || data.type == 'out')
         && data.timestamp is string && data.timestamp.size() <= 64
         && data.latitude is number
         && data.longitude is number
@@ -88,7 +88,7 @@ service cloud.firestore {
       return data.id is string && data.id.size() <= 128
         && data.userId is string && data.userId.size() <= 128
         && data.userName is string && data.userName.size() <= 128
-        && data.userRole in ['admin', 'employee']
+        && (data.userRole == 'admin' || data.userRole == 'employee')
         && data.action is string && data.action.size() <= 128
         && data.details is string && data.details.size() <= 1024
         && data.timestamp is string && data.timestamp.size() <= 64;
@@ -107,7 +107,7 @@ service cloud.firestore {
         && data.subject is string && data.subject.size() <= 256
         && data.body is string && data.body.size() <= 4096
         && data.sentAt is string && data.sentAt.size() <= 64
-        && data.type in ['missing_shift', 'overtime', 'password_reset', 'system']
+        && (data.type == 'missing_shift' || data.type == 'overtime' || data.type == 'password_reset' || data.type == 'system')
         && data.read is bool;
     }
 
@@ -123,8 +123,8 @@ service cloud.firestore {
         && data.userId is string && data.userId.size() <= 128
         && data.userName is string && data.userName.size() <= 128
         && data.date is string && data.date.size() <= 10
-        && data.type in ['Annual', 'Emergency', 'Sick', 'Unpaid']
-        && data.status in ['Approved', 'Pending', 'Rejected']
+        && (data.type == 'Annual' || data.type == 'Emergency' || data.type == 'Sick' || data.type == 'Unpaid')
+        && (data.status == 'Approved' || data.status == 'Pending' || data.status == 'Rejected')
         && data.note is string && data.note.size() <= 1024;
     }
 
@@ -141,6 +141,16 @@ service cloud.firestore {
         && data.annual is number
         && data.emergency is number
         && data.sick is number;
+    }
+
+    // --- EvacuationEvents Collection ---
+    match /evacuationEvents/{eventId} {
+      allow read, write: if true;
+    }
+
+    // --- EvacuationMembers Collection ---
+    match /evacuationMembers/{memberId} {
+      allow read, write: if true;
     }
   }
 }

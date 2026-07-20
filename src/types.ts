@@ -80,3 +80,25 @@ export interface LeaveQuota {
   emergency: number;
   sick: number;
 }
+
+export interface EvacuationEvent {
+  id: string;
+  officeSiteId: string;
+  officeSiteName: string;
+  active: boolean;
+  triggeredAt: string; // ISO timestamp
+  triggeredBy: string; // userId
+}
+
+export interface EvacuationMember {
+  id: string; // e.g. eventId-userId
+  eventId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  status: 'safe' | 'missing';
+  clockedInAt: string; // ISO timestamp when they clocked in
+  safeRegisteredAt?: string; // ISO timestamp when registered safe
+  qrCode?: string; // unique code representation
+}
+
