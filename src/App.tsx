@@ -13,6 +13,8 @@ import EmailInboxSim from './components/EmailInboxSim';
 import LeavePlanner from './components/LeavePlanner';
 import UserProfile from './components/UserProfile';
 import Evacuation from './components/Evacuation';
+import Certificates from './components/Certificates';
+import OperationGuide from './components/OperationGuide';
 import DialogLogo from './components/DialogLogo';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -143,6 +145,8 @@ export default function App() {
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard currentUser={currentUser} onNavigateToTab={(tab) => setActiveTab(tab)} />;
+      case 'guide':
+        return <OperationGuide currentUser={currentUser} />;
       case 'clock':
         return <PunchClock currentUser={currentUser} />;
       case 'calendar':
@@ -157,6 +161,8 @@ export default function App() {
         return currentUser.role === 'admin' ? <Logs currentUser={currentUser} /> : null;
       case 'profile':
         return <UserProfile currentUser={currentUser} onProfileUpdate={(u) => setCurrentUser(u)} />;
+      case 'certificates':
+        return <Certificates currentUser={currentUser} />;
       case 'evacuation':
         return <Evacuation currentUser={currentUser} />;
       case 'emails':

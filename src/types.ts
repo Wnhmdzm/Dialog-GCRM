@@ -9,6 +9,13 @@ export interface User {
   firstTimePasswordChangeRequired: boolean;
   status: 'active' | 'suspended';
   avatarUrl?: string;
+  // Offshore Malaysia Parameters
+  phone?: string;
+  kinName?: string;
+  kinPhone?: string;
+  passportOrNric?: string;
+  offshoreGridNumber?: string;
+  epTravelStatus?: 'Approved' | 'Pending' | 'Not Started';
 }
 
 export interface OfficeSite {
@@ -101,4 +108,29 @@ export interface EvacuationMember {
   safeRegisteredAt?: string; // ISO timestamp when registered safe
   qrCode?: string; // unique code representation
 }
+
+export interface Certificate {
+  id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  certType: string;      // e.g. "BOSIET", "PETRONAS Medical", "OGSP", "CIDB Green Card", "HUET", "Other"
+  fileName: string;
+  fileData?: string;     // Base64 file contents for mock display/viewing
+  issueDate: string;     // YYYY-MM-DD
+  expiryDate: string;    // YYYY-MM-DD
+  uploadedAt: string;    // ISO string
+  status: 'valid' | 'expiring' | 'expired';
+}
+
+export interface CertificateRequest {
+  id: string;
+  title: string;
+  certType: string;
+  description: string;
+  issuedAt: string;      // ISO string
+  issuedBy: string;      // Admin name
+  requiredByDate: string; // YYYY-MM-DD
+}
+
 

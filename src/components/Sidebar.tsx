@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../types';
-import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame } from 'lucide-react';
+import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame, Award, BookOpen } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface SidebarProps {
@@ -33,6 +33,12 @@ export default function Sidebar({
       adminOnly: false
     },
     {
+      id: 'guide',
+      label: 'User Guide & Go-Live',
+      icon: <BookOpen className="h-4 w-4 text-indigo-500" />,
+      adminOnly: false
+    },
+    {
       id: 'clock',
       label: 'Onsite Shift Clock',
       icon: <Clock className="h-4 w-4" />,
@@ -48,6 +54,12 @@ export default function Sidebar({
       id: 'reports',
       label: 'Calculated Manhours',
       icon: <FileBarChart2 className="h-4 w-4" />,
+      adminOnly: false
+    },
+    {
+      id: 'certificates',
+      label: 'Certificates',
+      icon: <Award className="h-4 w-4" />,
       adminOnly: false
     },
     {
@@ -91,10 +103,10 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Mobile Sidebar Backdrop Overlay with background blur */}
+      {/* Sidebar Backdrop Overlay with background blur */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-md lg:hidden transition-opacity duration-300 ease-in-out"
+          className="fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-md transition-opacity duration-300 ease-in-out"
           onClick={onToggle}
         />
       )}
@@ -102,8 +114,7 @@ export default function Sidebar({
       {/* Sidebar container */}
       <aside className={`border-gray-200/80 bg-slate-50/95 flex flex-col shrink-0 select-none transition-transform duration-300 ease-out
         fixed top-0 left-0 h-full w-[285px] z-50 p-5 border-r shadow-2xl
-        lg:sticky lg:h-screen lg:w-64 lg:translate-x-0 lg:shadow-none lg:z-20 lg:p-5 lg:bg-slate-50/70
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
       
       {/* Branding and Title */}

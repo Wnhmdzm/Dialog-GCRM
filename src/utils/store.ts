@@ -1,4 +1,4 @@
-import { User, OfficeSite, PunchLog, ActivityLog, EmailNotification, SimulatedLocation, LeaveDay, LeaveQuota, EvacuationEvent, EvacuationMember } from '../types';
+import { User, OfficeSite, PunchLog, ActivityLog, EmailNotification, SimulatedLocation, LeaveDay, LeaveQuota, EvacuationEvent, EvacuationMember, Certificate, CertificateRequest } from '../types';
 import { INITIAL_USERS, INITIAL_USER_PASSWORDS, INITIAL_OFFICES, INITIAL_PUNCH_LOGS, INITIAL_ACTIVITY_LOGS, INITIAL_EMAILS } from '../mockData';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, doc, setDoc, getDocs, deleteDoc, onSnapshot } from 'firebase/firestore';
@@ -16,6 +16,8 @@ const KEY_LEAVE_DAYS = 'geoclock_leave_days';
 const KEY_LEAVE_QUOTAS = 'geoclock_leave_quotas';
 const KEY_EVACUATION_EVENTS = 'geoclock_evacuation_events';
 const KEY_EVACUATION_MEMBERS = 'geoclock_evacuation_members';
+const KEY_CERTIFICATES = 'geoclock_certificates';
+const KEY_CERTIFICATE_REQUESTS = 'geoclock_certificate_requests';
 
 export class Store {
   private static unsubscribes: (() => void)[] = [];
@@ -83,9 +85,7 @@ export class Store {
         
         // Seed leave quotas
         const initialQuotas: LeaveQuota[] = [
-          { userId: 'user-emp1', userName: 'John Doe', annual: 14, emergency: 5, sick: 10 },
-          { userId: 'user-emp2', userName: 'Sarah Jenkins', annual: 14, emergency: 5, sick: 10 },
-          { userId: 'user-emp3', userName: 'Bob Smith', annual: 14, emergency: 5, sick: 10 },
+          { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
         ];
         for (const q of initialQuotas) {
           await setDoc(doc(db, 'leaveQuotas', q.userId), q);
@@ -149,6 +149,8 @@ export class Store {
       { name: 'leaveQuotas', key: KEY_LEAVE_QUOTAS, defaultValue: [] },
       { name: 'evacuationEvents', key: KEY_EVACUATION_EVENTS, defaultValue: [] },
       { name: 'evacuationMembers', key: KEY_EVACUATION_MEMBERS, defaultValue: [] },
+      { name: 'certificates', key: KEY_CERTIFICATES, defaultValue: [] },
+      { name: 'certificateRequests', key: KEY_CERTIFICATE_REQUESTS, defaultValue: [] },
     ];
 
     collections.forEach(col => {
@@ -463,5 +465,126 @@ export class Store {
   static saveEvacuationMembers(members: EvacuationMember[]) {
     localStorage.setItem(KEY_EVACUATION_MEMBERS, JSON.stringify(members));
     this.syncCollectionWrite('evacuationMembers', members);
+  }
+
+  // --- Certificate Operations ---
+  static getCertificates(): Certificate[] {
+    const data = localStorage.getItem(KEY_CERTIFICATES);
+    if (!data) {
+      localStorage.setItem(KEY_CERTIFICATES, JSON.stringify([]));
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  static saveCertificates(certs: Certificate[]) {
+    localStorage.setItem(KEY_CERTIFICATES, JSON.stringify(certs));
+    this.syncCollectionWrite('certificates', certs);
+  }
+
+  static getCertificateRequests(): CertificateRequest[] {
+    const data = localStorage.getItem(KEY_CERTIFICATE_REQUESTS);
+    if (!data) {
+      localStorage.setItem(KEY_CERTIFICATE_REQUESTS, JSON.stringify([]));
+      return [];
+    }
+    return JSON.parse(data);
+  }
+
+  static saveCertificateRequests(requests: CertificateRequest[]) {
+    localStorage.setItem(KEY_CERTIFICATE_REQUESTS, JSON.stringify(requests));
+    this.syncCollectionWrite('certificateRequests', requests);
+  }
+
+  // Clear all database tables and make the system completely fresh for live operation
+  static async resetDatabaseToLive() {
+    try {
+      const cleanUsers = [
+        {
+          id: 'user-khairumi',
+          name: 'Khairumi Kasim (HSE Engineer)',
+          email: 'khairumi.kasim@dialogasia.com',
+          role: 'admin',
+          joinedAt: new Date().toISOString(),
+          firstTimePasswordChangeRequired: false,
+          status: 'active',
+          avatarUrl: 'https://hoirqrkdgbmvpwutwuwj-all.supabase.co/storage/v1/object/public/assets/assets/ea777f21-df8c-431d-956a-57390ff9e591_320w.jpg'
+        }
+      ];
+
+      const cleanPasswords = {
+        'user-khairumi': 'Dialog123'
+      };
+
+      // Set localStorage
+      localStorage.setItem(KEY_USERS, JSON.stringify(cleanUsers));
+      localStorage.setItem(KEY_PASSWORDS, JSON.stringify(cleanPasswords));
+      localStorage.setItem(KEY_OFFICES, JSON.stringify([]));
+      localStorage.setItem(KEY_PUNCH_LOGS, JSON.stringify([]));
+      localStorage.setItem(KEY_ACTIVITY_LOGS, JSON.stringify([{
+        id: `act-boot-${Date.now()}`,
+        userId: 'user-khairumi',
+        userName: 'Khairumi Kasim',
+        userRole: 'admin',
+        action: 'SYSTEM_LIVE_BOOT',
+        details: 'Personnel On Board System cleared and initialized for live operations.',
+        timestamp: new Date().toISOString()
+      }]));
+      localStorage.setItem(KEY_EMAILS, JSON.stringify([]));
+      localStorage.setItem(KEY_LEAVE_DAYS, JSON.stringify([]));
+      localStorage.setItem(KEY_LEAVE_QUOTAS, JSON.stringify([{
+        userId: 'user-khairumi',
+        userName: 'Khairumi Kasim (HSE Engineer)',
+        annual: 14,
+        emergency: 5,
+        sick: 10
+      }]));
+      localStorage.setItem(KEY_EVACUATION_EVENTS, JSON.stringify([]));
+      localStorage.setItem(KEY_EVACUATION_MEMBERS, JSON.stringify([]));
+      localStorage.setItem(KEY_CERTIFICATES, JSON.stringify([]));
+      localStorage.setItem(KEY_CERTIFICATE_REQUESTS, JSON.stringify([]));
+
+      // Sync writes to Firestore (this will delete other docs thanks to syncCollectionWrite)
+      await this.syncCollectionWrite('users', cleanUsers);
+      await this.syncCollectionWrite('officeSites', []);
+      await this.syncCollectionWrite('punchLogs', []);
+      await this.syncCollectionWrite('activityLogs', [{
+        id: `act-boot-${Date.now()}`,
+        userId: 'user-khairumi',
+        userName: 'Khairumi Kasim',
+        userRole: 'admin',
+        action: 'SYSTEM_LIVE_BOOT',
+        details: 'Personnel On Board System cleared and initialized for live operations.',
+        timestamp: new Date().toISOString()
+      }]);
+      await this.syncCollectionWrite('emails', []);
+      await this.syncCollectionWrite('leaveDays', []);
+      await this.syncCollectionWrite('leaveQuotas', [{
+        userId: 'user-khairumi',
+        userName: 'Khairumi Kasim (HSE Engineer)',
+        annual: 14,
+        emergency: 5,
+        sick: 10
+      }]);
+      await this.syncCollectionWrite('evacuationEvents', []);
+      await this.syncCollectionWrite('evacuationMembers', []);
+      await this.syncCollectionWrite('certificates', []);
+      await this.syncCollectionWrite('certificateRequests', []);
+
+      // passwords is a special case
+      await setDoc(doc(db, 'passwords', 'user-khairumi'), { password: 'Dialog123' });
+      const passSnapshot = await getDocs(collection(db, 'passwords'));
+      for (const passDoc of passSnapshot.docs) {
+        if (passDoc.id !== 'user-khairumi') {
+          await deleteDoc(doc(db, 'passwords', passDoc.id));
+        }
+      }
+
+      console.log('Database successfully cleared and re-initialized.');
+      return true;
+    } catch (err) {
+      console.error('Error during database live reset:', err);
+      throw err;
+    }
   }
 }

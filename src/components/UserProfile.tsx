@@ -13,6 +13,21 @@ export default function UserProfile({ currentUser, onProfileUpdate }: UserProfil
   const [email, setEmail] = useState(currentUser.email);
   const [avatarUrl, setAvatarUrl] = useState(currentUser.avatarUrl || '');
   
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setAvatarUrl(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
   // Password change states
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -210,15 +225,22 @@ export default function UserProfile({ currentUser, onProfileUpdate }: UserProfil
         <div className="bg-white rounded-3xl p-6 shadow-[0_12px_30px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col items-center text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
           
-          <div className="relative mt-4">
-            <div className="h-20 w-20 rounded-full bg-blue-50 border-2 border-blue-100 flex items-center justify-center font-bold text-blue-600 text-3xl overflow-hidden shadow-inner">
+          <div className="relative mt-4 cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleImageChange} 
+              accept="image/*" 
+              className="hidden" 
+            />
+            <div className="h-20 w-20 rounded-full bg-blue-50 border-2 border-blue-100 flex items-center justify-center font-bold text-blue-600 text-3xl overflow-hidden shadow-inner group-hover:opacity-85 transition">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={currentUser.name} referrerPolicy="no-referrer" className="h-full w-full object-cover" />
               ) : (
                 currentUser.name.charAt(0).toUpperCase()
               )}
             </div>
-            <div className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full shadow-lg border border-white">
+            <div className="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full shadow-lg border border-white group-hover:scale-110 transition">
               <Camera className="h-3.5 w-3.5" />
             </div>
           </div>

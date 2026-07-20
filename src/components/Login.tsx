@@ -484,49 +484,28 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 </button>
               </form>
             )}
-
-            {/* Quick Demo Login Presets */}
             <div className="mt-6 pt-5 border-t border-gray-100 text-left">
-              <p className="text-gray-400 text-[10px] text-center font-semibold uppercase tracking-wider mb-3">Quick Demo Presets</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <p className="text-gray-400 text-[10px] text-center font-semibold uppercase tracking-wider mb-3">Live System Access</p>
+              <div className="space-y-3">
                 <button
                   type="button"
                   onClick={() => selectMockUser('khairumi.kasim@dialogasia.com', 'Dialog123')}
-                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group text-slate-900"
+                  className="w-full p-4 bg-blue-50/40 hover:bg-blue-50 border border-blue-100 rounded-2xl text-left transition-all duration-150 flex items-center justify-between group"
                 >
-                  <span className="text-[11px] font-semibold text-rose-700 flex items-center gap-1">
-                    <UserCheck className="h-3.5 w-3.5 text-rose-500 shrink-0" />
-                    Khairumi (HSE Engineer)
-                  </span>
-                  <span className="text-[10px] text-gray-400 truncate mt-1">khairumi.kasim@dialogasia.com</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => selectMockUser('john@dialogasia.com', 'Dialog123')}
-                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group"
-                >
-                  <span className="text-[11px] font-medium text-amber-600 flex items-center gap-1">
-                    <UserCheck className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                    John (First Reset)
-                  </span>
-                  <span className="text-[10px] text-gray-400 truncate mt-1">john@dialogasia.com</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => selectMockUser('sarah@dialogasia.com', 'Dialog123')}
-                  className="p-3 bg-gray-50/40 hover:bg-gray-50 border border-gray-150 rounded-2xl text-left transition-all duration-150 flex flex-col group"
-                >
-                  <span className="text-[11px] font-medium text-emerald-700 flex items-center gap-1 justify-between">
-                    <span className="flex items-center gap-1">
-                      <UserCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                      Sarah Jenkins (Staff)
+                  <div className="space-y-1">
+                    <span className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                      <UserCheck className="h-4 w-4 text-blue-600 shrink-0" />
+                      Khairumi Kasim (HSE Engineer / Admin)
                     </span>
-                    <span className="text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full font-medium">Active</span>
+                    <span className="text-[11px] text-blue-700/80 block font-mono">khairumi.kasim@dialogasia.com</span>
+                  </div>
+                  <span className="text-[10px] bg-blue-600 text-white font-semibold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm group-hover:bg-blue-700 transition">
+                    Autofill
                   </span>
-                  <span className="text-[10px] text-gray-400 mt-1">sarah@dialogasia.com</span>
                 </button>
+                <p className="text-[10px] text-gray-400 text-center leading-relaxed">
+                  Demo personnel are purged. Log in as Admin to begin adding real employees dynamically from the Employee Management console. Default starting password: <strong className="text-gray-600">Dialog123</strong>
+                </p>
               </div>
             </div>
           </div>
