@@ -1,6 +1,7 @@
 import React from 'react';
 import { User } from '../types';
 import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar } from 'lucide-react';
+import DialogLogo from './DialogLogo';
 
 interface SidebarProps {
   currentUser: User;
@@ -84,14 +85,15 @@ export default function Sidebar({
     }`}>
       
       {/* Branding and Title */}
-      <div className="mb-6 flex items-center shrink-0 min-w-[200px] text-left">
-        <div className="flex items-center gap-2 px-1">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+      <div className="mb-6 flex flex-col gap-1.5 shrink-0 min-w-[200px] text-left px-1">
+        <DialogLogo size="sm" className="justify-start" />
+        <div className="flex items-center gap-1.5 mt-1">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal-600"></span>
           </span>
-          <span className="font-semibold text-gray-900 tracking-tight text-xs uppercase whitespace-nowrap">
-            Dialog CRM
+          <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+            Attendance & CRM Hub
           </span>
         </div>
       </div>
@@ -153,7 +155,7 @@ export default function Sidebar({
       </nav>
 
       {/* Footer log out action */}
-      <div className="mt-auto pt-4 border-t border-gray-200/60 text-left">
+      <div className="mt-auto pt-4 border-t border-gray-200/60 text-left space-y-3">
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-gray-500 hover:bg-rose-50 hover:text-rose-600 transition-all"
@@ -161,6 +163,11 @@ export default function Sidebar({
           <LogOut className="h-4 w-4 text-gray-400 group-hover:text-rose-600" />
           <span>Disconnect CRM</span>
         </button>
+
+        <div className="px-2.5 py-2 bg-white/45 border border-gray-200/40 rounded-xl text-[10px] text-gray-400 leading-normal font-medium">
+          <span className="block font-bold text-gray-500 uppercase tracking-wide text-[8px] mb-0.5">App Developer</span>
+          Build by <span className="text-gray-700 font-bold block">Khairumi Kasim, HSE Engineer</span>
+        </div>
       </div>
 
     </aside>

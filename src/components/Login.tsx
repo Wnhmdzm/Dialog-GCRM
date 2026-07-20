@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Store } from '../utils/store';
 import { User } from '../types';
 import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText } from 'lucide-react';
+import DialogLogo from './DialogLogo';
 
 interface LoginProps {
   onLoginSuccess: (user: User) => void;
@@ -236,14 +237,14 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
       <div className="w-full max-w-md relative z-10 py-8">
         {/* Top Branding Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-3 bg-white border border-gray-150 rounded-2xl mb-4 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-            <KeyRound className="h-7 w-7 text-blue-600" />
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="mb-4">
+            <DialogLogo size="lg" />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 leading-none">
-            Dialog: Geofenced CRM
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 leading-none">
+            HSE & Geofenced Attendance CRM
           </h1>
-          <p className="text-gray-400 text-[11px] mt-2.5 font-medium uppercase tracking-wider leading-none">Attendance & Personal Leave Planner Hub</p>
+          <p className="text-gray-400 text-[10px] mt-2.5 font-bold uppercase tracking-widest leading-none">Attendance & Personal Leave Planner Hub</p>
         </div>
 
         {/* --- FLOW A: PASSWORD RESET FROM ADMIN LINK --- */}
@@ -532,7 +533,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
         )}
 
         {/* Floating manual button below the container */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-6 flex flex-col items-center gap-4">
           <button
             type="button"
             onClick={() => setIsManualOpen(true)}
@@ -541,6 +542,12 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             <BookOpen className="h-4 w-4 text-blue-500 shrink-0" />
             <span>Interactive CRM Manual & Role Guide</span>
           </button>
+
+          {/* Developer Credit */}
+          <div className="inline-flex items-center gap-1.5 bg-white border border-gray-150 px-4 py-2 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.02)] text-[11px] text-gray-400 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
+            <span>Build by <strong className="text-gray-700 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
+          </div>
         </div>
       </div>
 

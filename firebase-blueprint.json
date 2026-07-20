@@ -109,6 +109,15 @@
         "sick": { "type": "number", "description": "Remaining sick leave days." }
       },
       "required": ["userId", "userName", "annual", "emergency", "sick"]
+    },
+    "Password": {
+      "title": "Password",
+      "description": "User authentication credentials mapping.",
+      "type": "object",
+      "properties": {
+        "password": { "type": "string", "description": "Plaintext or hashed password secret." }
+      },
+      "required": ["password"]
     }
   },
   "firestore": {
@@ -139,6 +148,10 @@
     "/leaveQuotas/{quotaId}": {
       "schema": "LeaveQuota",
       "description": "Individual leave quota allocations."
+    },
+    "/passwords/{userId}": {
+      "schema": "Password",
+      "description": "User credential passwords stored securely by user ID."
     }
   }
 }
