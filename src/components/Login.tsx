@@ -544,9 +544,9 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
           </button>
 
           {/* Developer Credit */}
-          <div className="inline-flex items-center gap-1.5 bg-white border border-gray-150 px-4 py-2 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.02)] text-[11px] text-gray-400 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-            <span>Build by <strong className="text-gray-700 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
+          <div className="inline-flex items-center gap-1.5 text-[10px] text-gray-400 select-none">
+            <span className="w-1 h-1 rounded-full bg-teal-500 animate-pulse"></span>
+            <span>Build by <strong className="text-gray-500 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
           </div>
         </div>
       </div>

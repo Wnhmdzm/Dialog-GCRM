@@ -275,11 +275,11 @@ export default function App() {
           </div>
           
           {/* Page Footer */}
-          <footer className="mt-12 pt-6 border-t border-gray-250 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-gray-400 font-medium">
+          <footer className="mt-12 pt-6 border-t border-gray-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-gray-400 select-none">
             <span>&copy; {new Date().getFullYear()} DIALOG Group. All rights reserved.</span>
-            <div className="flex items-center gap-1.5 bg-white border border-gray-200 px-3 py-1 rounded-full shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
-              <span>Build by <strong className="text-slate-800 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
+            <div className="flex items-center gap-1 text-[9px]">
+              <span>Build by</span>
+              <strong className="text-gray-500 font-bold">Khairumi Kasim, HSE Engineer</strong>
             </div>
           </footer>
         </div>

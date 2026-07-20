@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../types';
-import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar } from 'lucide-react';
+import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface SidebarProps {
@@ -78,24 +78,45 @@ export default function Sidebar({
   ];
 
   return (
-    <aside className={`border-gray-200/80 bg-slate-50/70 backdrop-blur-lg flex flex-col z-20 shrink-0 select-none transition-all duration-300 ease-in-out ${
-      isOpen
-        ? 'w-full lg:w-64 p-5 border-b lg:border-b-0 lg:border-r h-auto lg:h-screen'
-        : 'w-full lg:w-0 h-0 lg:h-screen p-0 overflow-hidden border-0 lg:border-r-0'
-    }`}>
+    <>
+      {/* Mobile Sidebar Backdrop Overlay with background blur */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-md lg:hidden transition-opacity duration-300 ease-in-out"
+          onClick={onToggle}
+        />
+      )}
+
+      {/* Sidebar container */}
+      <aside className={`border-gray-200/80 bg-slate-50/95 flex flex-col shrink-0 select-none transition-transform duration-300 ease-out
+        fixed top-0 left-0 h-full w-[285px] z-50 p-5 border-r shadow-2xl
+        lg:sticky lg:h-screen lg:w-64 lg:translate-x-0 lg:shadow-none lg:z-20 lg:p-5 lg:bg-slate-50/70
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
       
       {/* Branding and Title */}
-      <div className="mb-6 flex flex-col gap-1.5 shrink-0 min-w-[200px] text-left px-1">
-        <DialogLogo size="sm" className="justify-start" />
-        <div className="flex items-center gap-1.5 mt-1">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal-600"></span>
-          </span>
-          <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
-            Attendance & CRM Hub
-          </span>
+      <div className="mb-6 flex items-center justify-between shrink-0 min-w-[200px] text-left px-1">
+        <div className="flex flex-col gap-1.5">
+          <DialogLogo size="sm" className="justify-start" />
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-teal-600"></span>
+            </span>
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+              Attendance & CRM Hub
+            </span>
+          </div>
         </div>
+
+        {/* Mobile close menu button */}
+        <button
+          onClick={onToggle}
+          className="lg:hidden p-1.5 rounded-xl bg-gray-150/70 hover:bg-gray-200/80 text-gray-600 transition"
+          title="Close Navigation Drawer"
+        >
+          <X className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Profile info card */}
@@ -155,21 +176,23 @@ export default function Sidebar({
       </nav>
 
       {/* Footer log out action */}
-      <div className="mt-auto pt-4 border-t border-gray-200/60 text-left space-y-3">
+      <div className="mt-auto pt-4 border-t border-gray-200/60 text-left space-y-2">
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-gray-500 hover:bg-rose-50 hover:text-rose-600 transition-all"
+          className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium text-gray-500 hover:bg-rose-50 hover:text-rose-600 transition-all"
         >
           <LogOut className="h-4 w-4 text-gray-400 group-hover:text-rose-600" />
           <span>Disconnect CRM</span>
         </button>
 
-        <div className="px-2.5 py-2 bg-white/45 border border-gray-200/40 rounded-xl text-[10px] text-gray-400 leading-normal font-medium">
-          <span className="block font-bold text-gray-500 uppercase tracking-wide text-[8px] mb-0.5">App Developer</span>
-          Build by <span className="text-gray-700 font-bold block">Khairumi Kasim, HSE Engineer</span>
+        <div className="pt-2 select-none">
+          <p className="text-[9px] text-gray-400 font-medium">
+            Build by <strong className="text-gray-600 font-bold">Khairumi Kasim, HSE Engineer</strong>
+          </p>
         </div>
       </div>
 
     </aside>
+  </>
   );
 }
