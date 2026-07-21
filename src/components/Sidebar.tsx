@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../types';
-import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame, Award, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame, Award, BookOpen, MessageSquare } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface SidebarProps {
@@ -64,7 +64,7 @@ export default function Sidebar({
     },
     {
       id: 'evacuation',
-      label: 'Vacuation Panel',
+      label: 'Evacuation',
       icon: <Flame className="h-4 w-4 text-rose-500" />,
       adminOnly: false
     },
@@ -88,8 +88,8 @@ export default function Sidebar({
     },
     {
       id: 'emails',
-      label: 'Simulated Mailroom',
-      icon: <Mail className="h-4 w-4" />,
+      label: 'Chat',
+      icon: <MessageSquare className="h-4 w-4 text-emerald-500" />,
       adminOnly: false,
       badge: unreadEmailCount > 0 ? unreadEmailCount : undefined
     },
@@ -135,10 +135,11 @@ export default function Sidebar({
         {/* Minimize menu button */}
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition flex items-center justify-center border border-gray-200/50"
+          className="p-1.5 px-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition flex items-center justify-center gap-1 border border-gray-200/50"
           title="Minimize Navigation Menu"
         >
-          <X className="h-4 w-4" />
+          <X className="h-3.5 w-3.5" />
+          <span className="text-[10px] font-bold uppercase tracking-wider">Minimize</span>
         </button>
       </div>
 

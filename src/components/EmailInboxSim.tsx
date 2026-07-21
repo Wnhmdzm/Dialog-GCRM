@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Store } from '../utils/store';
 import { EmailNotification } from '../types';
-import { Mail, MailOpen, AlertTriangle, Clock, Key, CheckCircle, Trash2, ArrowUpRight } from 'lucide-react';
+import { Mail, MailOpen, AlertTriangle, Clock, Key, CheckCircle, Trash2, ArrowUpRight, MessageSquare } from 'lucide-react';
 
 interface EmailInboxSimProps {
   onTriggerResetFlow: (userId: string) => void;
@@ -77,8 +77,8 @@ export default function EmailInboxSim({ onTriggerResetFlow, currentUserEmail, is
       <div className="md:col-span-1 border-r border-gray-100 pr-4 flex flex-col h-full">
         <div className="flex items-center justify-between pb-3 border-b border-gray-100 shrink-0">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-900 flex items-center gap-2">
-            <Mail className="h-4 w-4 text-blue-500" />
-            Simulated Inbox
+            <MessageSquare className="h-4 w-4 text-emerald-500" />
+            Live Chat & Broadcasts
           </h3>
           {isAdmin && (
             <span className="text-[9px] bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded-full font-medium tracking-wide shrink-0">
@@ -90,7 +90,7 @@ export default function EmailInboxSim({ onTriggerResetFlow, currentUserEmail, is
         <div className="flex-1 overflow-y-auto space-y-3 mt-4 pr-1">
           {filteredEmails.length === 0 ? (
             <div className="text-center py-12 text-gray-400 text-xs font-medium uppercase tracking-wider">
-              No simulated emails.
+              No chat messages or broadcasts.
             </div>
           ) : (
             filteredEmails.map((email) => {
@@ -181,7 +181,7 @@ export default function EmailInboxSim({ onTriggerResetFlow, currentUserEmail, is
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-400 p-8 text-center">
             <MailOpen className="h-10 w-10 text-gray-300 mb-3" />
-            <p className="text-xs font-medium tracking-tight text-gray-400 max-w-sm leading-relaxed">Select a simulated notification to preview</p>
+            <p className="text-xs font-medium tracking-tight text-gray-400 max-w-sm leading-relaxed">Select a chat message or broadcast to preview</p>
           </div>
         )}
       </div>

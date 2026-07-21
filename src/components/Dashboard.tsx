@@ -371,17 +371,19 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
         {isAdmin ? (
           <>
             {/* Card A1: Active Staff */}
-            <div className="p-5 bg-white rounded-2xl relative flex flex-col justify-between h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Active Attendance</span>
-                  <span className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                </div>
-                <span className="text-2xl font-semibold text-emerald-600 mt-3. block leading-none tracking-tight">{activeStaffCount} Staff Online</span>
+            <div className="p-5 bg-white rounded-2xl relative flex flex-col h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Active Attendance</span>
+                <span className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></span>
               </div>
+              
+              <div className="flex-1 flex items-center justify-start">
+                <span className="text-2xl font-semibold text-emerald-600 leading-none tracking-tight">{activeStaffCount} Staff Online</span>
+              </div>
+
               <button 
                 onClick={() => onNavigateToTab('reports')} 
-                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider mt-auto border-t border-gray-100 pt-2.5"
+                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider border-t border-gray-100 pt-2.5"
               >
                 Inspect shift registries
                 <ChevronRight className="h-3.5 w-3.5 text-gray-400 shrink-0" />
@@ -389,17 +391,19 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
             </div>
 
             {/* Card A2: Total sites */}
-            <div className="p-5 bg-white rounded-2xl relative flex flex-col justify-between h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Authorized Site Areas</span>
-                  <span className="h-2 w-2 bg-blue-500 rounded-full"></span>
-                </div>
-                <span className="text-2xl font-semibold text-blue-600 mt-3. block leading-none tracking-tight">{offices.length} Gated Sites</span>
+            <div className="p-5 bg-white rounded-2xl relative flex flex-col h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Authorized Site Areas</span>
+                <span className="h-2 w-2 bg-blue-500 rounded-full"></span>
               </div>
+              
+              <div className="flex-1 flex items-center justify-start">
+                <span className="text-2xl font-semibold text-blue-600 leading-none tracking-tight">{offices.length} Gated Sites</span>
+              </div>
+
               <button 
                 onClick={() => onNavigateToTab('locations')} 
-                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider mt-auto border-t border-gray-100 pt-2.5"
+                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider border-t border-gray-100 pt-2.5"
               >
                 Modify geofence configurations
                 <ChevronRight className="h-3.5 w-3.5 text-gray-400 shrink-0" />
@@ -407,17 +411,19 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
             </div>
 
             {/* Card A3: Simulated Inbox Alert logs */}
-            <div className="p-5 bg-white rounded-2xl relative flex flex-col justify-between h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">System Email Dispatches</span>
-                  <span className="h-2 w-2 bg-amber-500 rounded-full"></span>
-                </div>
-                <span className="text-2xl font-semibold text-amber-600 mt-3. block leading-none tracking-tight">{Store.getEmails().length} Alerts Sent</span>
+            <div className="p-5 bg-white rounded-2xl relative flex flex-col h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">System Email Dispatches</span>
+                <span className="h-2 w-2 bg-amber-500 rounded-full"></span>
               </div>
+              
+              <div className="flex-1 flex items-center justify-start">
+                <span className="text-2xl font-semibold text-amber-600 leading-none tracking-tight">{Store.getEmails().length} Alerts Sent</span>
+              </div>
+
               <button 
                 onClick={() => onNavigateToTab('emails')} 
-                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider mt-auto border-t border-gray-100 pt-2.5"
+                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider border-t border-gray-100 pt-2.5"
               >
                 View automated alerts sandbox
                 <ChevronRight className="h-3.5 w-3.5 text-gray-400 shrink-0" />
@@ -427,19 +433,21 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
         ) : (
           <>
             {/* Card E1: Active Attendance status */}
-            <div className="p-5 bg-white rounded-2xl relative flex flex-col justify-between h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Active Shift Status</span>
-                  <span className={`h-2 w-2 rounded-full ${isClockedIn ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}`}></span>
-                </div>
-                <span className={`text-2xl font-semibold mt-3. block leading-none tracking-tight ${isClockedIn ? 'text-emerald-600' : 'text-gray-400'}`}>
+            <div className="p-5 bg-white rounded-2xl relative flex flex-col h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Active Shift Status</span>
+                <span className={`h-2 w-2 rounded-full ${isClockedIn ? 'bg-emerald-500 animate-pulse' : 'bg-gray-300'}`}></span>
+              </div>
+              
+              <div className="flex-1 flex items-center justify-start">
+                <span className={`text-2xl font-semibold leading-none tracking-tight ${isClockedIn ? 'text-emerald-600' : 'text-gray-400'}`}>
                   {isClockedIn ? 'CLOCKED IN' : 'OFF DUTY'}
                 </span>
               </div>
+
               <button 
                 onClick={() => onNavigateToTab('clock')} 
-                className="text-[10px] text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider mt-auto border-t border-gray-100 pt-2.5"
+                className="text-[10px] text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider border-t border-gray-100 pt-2.5"
               >
                 Open Punch Clock Station
                 <ChevronRight className="h-3.5 w-3.5 text-blue-600 shrink-0" />
@@ -447,19 +455,21 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
             </div>
 
             {/* Card E2: Accumulated hours */}
-            <div className="p-5 bg-white rounded-2xl relative flex flex-col justify-between h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Logged Attendance</span>
-                  <span className="h-2 w-2 bg-blue-500 rounded-full"></span>
-                </div>
-                <span className="text-2xl font-semibold text-blue-600 mt-3. block leading-none tracking-tight">
+            <div className="p-5 bg-white rounded-2xl relative flex flex-col h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Logged Attendance</span>
+                <span className="h-2 w-2 bg-blue-500 rounded-full"></span>
+              </div>
+              
+              <div className="flex-1 flex items-center justify-start">
+                <span className="text-2xl font-semibold text-blue-600 leading-none tracking-tight">
                   {myLogs.filter(l => l.type === 'out').length} Shifts Saved
                 </span>
               </div>
+
               <button 
                 onClick={() => onNavigateToTab('reports')} 
-                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider mt-auto border-t border-gray-100 pt-2.5"
+                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider border-t border-gray-100 pt-2.5"
               >
                 Inspect personal work hours
                 <ChevronRight className="h-3.5 w-3.5 text-gray-400 shrink-0" />
@@ -467,19 +477,21 @@ export default function Dashboard({ currentUser, onNavigateToTab }: DashboardPro
             </div>
 
             {/* Card E3: Inbox alert count */}
-            <div className="p-5 bg-white rounded-2xl relative flex flex-col justify-between h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
-              <div>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Notifications Received</span>
-                  <span className="h-2 w-2 bg-amber-500 rounded-full"></span>
-                </div>
-                <span className="text-2xl font-semibold text-amber-600 mt-3. block leading-none tracking-tight">
+            <div className="p-5 bg-white rounded-2xl relative flex flex-col h-36 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_12px_30px_rgba(0,0,0,0.035)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.07)]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider block leading-none">Notifications Received</span>
+                <span className="h-2 w-2 bg-amber-500 rounded-full"></span>
+              </div>
+              
+              <div className="flex-1 flex items-center justify-start">
+                <span className="text-2xl font-semibold text-amber-600 leading-none tracking-tight">
                   {Store.getEmails().filter(e => e.recipientEmail.toLowerCase() === currentUser.email.toLowerCase()).length} Alerts
                 </span>
               </div>
+
               <button 
                 onClick={() => onNavigateToTab('emails')} 
-                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider mt-auto border-t border-gray-100 pt-2.5"
+                className="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 transition-colors text-left font-medium uppercase tracking-wider border-t border-gray-100 pt-2.5"
               >
                 Inspect simulated notification logs
                 <ChevronRight className="h-3.5 w-3.5 text-gray-400 shrink-0" />

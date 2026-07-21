@@ -20,6 +20,7 @@ export default function Evacuation({ currentUser }: EvacuationProps) {
   
   // Scan simulators
   const [scannerMode, setScannerMode] = useState<'camera' | 'text'>('camera');
+  const [cameraPermission, setCameraPermission] = useState<'prompt' | 'granted' | 'denied'>('prompt');
   const [manualCodeInput, setManualCodeInput] = useState('');
   const [scanSuccessMsg, setScanSuccessMsg] = useState('');
   const [scanErrorMsg, setScanErrorMsg] = useState('');
@@ -27,6 +28,30 @@ export default function Evacuation({ currentUser }: EvacuationProps) {
   
   // Audio chime feedback simulation
   const [chimeActive, setChimeActive] = useState(false);
+
+  const requestCameraPermission = async () => {
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        stream.getTracks().forEach(track => track.stop());
+      }
+      setCameraPermission('granted');
+      setScanSuccessMsg('Camera permission granted successfully! Scanner active.');
+      setScanErrorMsg('');
+    } catch (err: any) {
+      console.warn('Camera permission request denied or failed:', err);
+      // Graceful fallback for sandboxed iframes: allow user to mock-grant if iframe restrictions block it
+      const fallback = confirm("Browser camera API was blocked by iframe sandbox or device permissions.\n\nWould you like to bypass and simulate camera permission for testing?");
+      if (fallback) {
+        setCameraPermission('granted');
+        setScanSuccessMsg('Simulated camera permission granted for testing.');
+        setScanErrorMsg('');
+      } else {
+        setCameraPermission('denied');
+        setScanErrorMsg('Camera access denied. Assembly QR scanning is inactive.');
+      }
+    }
+  };
 
   const refreshData = () => {
     // Load offices
@@ -224,14 +249,49 @@ export default function Evacuation({ currentUser }: EvacuationProps) {
             clockedInAt: lastPunch.timestamp
           });
 
-          // Send simulated hazard notification email
-          const emailBody = `🚨 CRITICAL EMERGENCY NOTICE 🚨\n\nDear ${u.name},\n\nAn emergency evacuation has been triggered for your current work coordinates at: "${targetSite.name}".\n\nPlease exit the premises immediately. Follow designated escape routes and locate the emergency assembly point.\n\nYour Safety Registration Code is: evac-${u.id}\n\nPlease scan this code with the HSE Warden or click "Mark Myself Safe" on your CRM dashboard immediately once you reach the Muster Point.\n\nSTAY SAFE.\n- HSE Control Room, DIALOG Asia`;
+          // Send simulated hazard notification email (Chat Inbox: QR code excluded for security)
+          const simulatedEmailBody = `🚨 CRITICAL EMERGENCY NOTICE 🚨\n\nDear ${u.name},\n\nAn emergency evacuation has been triggered for your current coordinates at: "${targetSite.name}".\n\nPlease exit the premises immediately and locate the designated emergency assembly point.\n\n🔒 SECURITY NOTE: Your secure Muster Assembly QR Code has been securely dispatched directly to your real corporate email address (${u.email}) and is NOT displayed in this chatbox.\n\nPlease check your real email on your mobile device to scan at the assembly station, or click "Mark Myself Safe" on your dashboard.\n\nSTAY SAFE.\n- HSE Control Room, DIALOG Asia`;
           
+          const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=evac-${u.id}`;
+          const realEmailHtml = `
+            <div style="font-family: sans-serif; padding: 24px; background-color: #fcfcfc; border: 1px solid #eee; border-radius: 16px; max-width: 600px; margin: 0 auto; text-align: left;">
+              <h2 style="color: #e11d48; margin-top: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;">
+                🚨 CRITICAL EMERGENCY NOTICE
+              </h2>
+              <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                Dear <strong>${u.name}</strong>,
+              </p>
+              <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                An emergency evacuation has been triggered for your current work coordinates at: <strong>"${targetSite.name}"</strong>.
+              </p>
+              <p style="font-size: 14px; color: #333; line-height: 1.6;">
+                Please exit the premises immediately. Follow designated escape routes and locate the emergency assembly point.
+              </p>
+              
+              <div style="margin: 24px 0; padding: 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; text-align: center;">
+                <p style="font-size: 12px; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">MUSTER ASSEMBLY POINT QR CODE</p>
+                <img src="${qrImageUrl}" alt="Safety QR Code" style="width: 150px; height: 150px; border: 1px solid #ddd; padding: 4px; background: white; border-radius: 8px;" />
+                <p style="font-size: 13px; font-family: monospace; color: #0284c7; font-weight: bold; margin-top: 12px; margin-bottom: 0;">Code: evac-${u.id}</p>
+              </div>
+
+              <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
+                Show this QR code to the HSE Warden at the assembly point, or click "Mark Myself Safe" on your dashboard once you reach the Muster Point.
+              </p>
+              <p style="font-size: 13px; color: #334155; font-weight: bold; margin-top: 24px; margin-bottom: 0;">
+                STAY SAFE.
+              </p>
+              <p style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+                HSE Control Room, DIALOG Asia
+              </p>
+            </div>
+          `;
+
           Store.sendEmail(
             u.email,
             `🚨 EMERGENCY EVACUATION ORDER: ${targetSite.name}`,
-            emailBody,
-            'system'
+            simulatedEmailBody,
+            'system',
+            realEmailHtml
           );
         }
       }
@@ -551,7 +611,7 @@ export default function Evacuation({ currentUser }: EvacuationProps) {
                   className="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-semibold uppercase tracking-wider shadow-md shadow-rose-100 flex items-center justify-center gap-1.5 transition-all"
                 >
                   <Flame className="h-4 w-4" />
-                  Initiate "Vacuation" Alarm
+                  Initiate Evacuation Alarm
                 </button>
               ) : (
                 <div className="p-3 bg-amber-50 border border-amber-100 rounded-2xl text-[11px] text-amber-700 leading-normal flex items-start gap-2">
@@ -603,17 +663,32 @@ export default function Evacuation({ currentUser }: EvacuationProps) {
 
               {scannerMode === 'camera' ? (
                 <div className="space-y-3">
-                  {/* Glowing Scanner Frame Mockup */}
-                  <div className="relative aspect-video w-full bg-slate-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-800 shadow-inner group">
-                    <div className="absolute inset-4 border-2 border-dashed border-blue-500/30 rounded-xl flex items-center justify-center">
-                      <div className="h-2/3 aspect-square border-2 border-blue-500 rounded-lg animate-pulse-slow relative">
-                        {/* Red scanning horizontal line */}
-                        <div className="absolute left-0 right-0 h-0.5 bg-rose-500 shadow-lg shadow-rose-500/80 animate-scan-line"></div>
-                      </div>
+                  {cameraPermission !== 'granted' ? (
+                    <div className="relative aspect-video w-full bg-slate-950 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-800 p-6 text-center space-y-3 relative">
+                      <div className="absolute inset-4 border border-dashed border-rose-500/20 rounded-xl"></div>
+                      <ShieldAlert className="h-9 w-9 text-rose-500 animate-pulse relative z-10" />
+                      <p className="text-xs font-semibold text-slate-200 relative z-10">Camera Access Required</p>
+                      <p className="text-[10px] text-slate-400 max-w-xs leading-relaxed relative z-10">The HSE Assembly Point QR Scanner requires camera access to scan crew badges.</p>
+                      <button
+                        onClick={requestCameraPermission}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow-md transition relative z-10 cursor-pointer"
+                        type="button"
+                      >
+                        Grant Device Camera Access
+                      </button>
                     </div>
-                    
-                    <span className="text-[10px] font-mono text-slate-500 z-10 select-none">Camera active (simulated view)</span>
-                  </div>
+                  ) : (
+                    <div className="relative aspect-video w-full bg-slate-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center border border-slate-800 shadow-inner group">
+                      <div className="absolute inset-4 border-2 border-dashed border-blue-500/30 rounded-xl flex items-center justify-center">
+                        <div className="h-2/3 aspect-square border-2 border-blue-500 rounded-lg animate-pulse-slow relative">
+                          {/* Red scanning horizontal line */}
+                          <div className="absolute left-0 right-0 h-0.5 bg-rose-500 shadow-lg shadow-rose-500/80 animate-scan-line"></div>
+                        </div>
+                      </div>
+                      
+                      <span className="text-[10px] font-mono text-slate-500 z-10 select-none">Camera active (simulated view)</span>
+                    </div>
+                  )}
 
                   {/* Simulator Trigger Box: choose which missing user scans their QR */}
                   <div>

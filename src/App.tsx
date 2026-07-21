@@ -18,7 +18,8 @@ import OperationGuide from './components/OperationGuide';
 import DialogLogo from './components/DialogLogo';
 import { motion, AnimatePresence } from 'motion/react';
 
-import { ShieldCheck, CheckCircle2, AlertTriangle, Bell, Mail, RefreshCw, Sparkles, Menu } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertTriangle, Bell, Mail, RefreshCw, Sparkles, Menu, MapPin } from 'lucide-react';
+import { getDistanceMeters, formatDistance } from './utils/geo';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -27,6 +28,16 @@ export default function App() {
   const [unreadEmailsCount, setUnreadEmailsCount] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Collapsed/hidden by default
   const [syncTrigger, setSyncTrigger] = useState(0);
+  const [currentLocation, setCurrentLocation] = useState(() => Store.getSimulatedLocation());
+
+  // Periodically read current location to keep header synchronized
+  useEffect(() => {
+    const syncLocation = () => {
+      setCurrentLocation(Store.getSimulatedLocation());
+    };
+    const interval = setInterval(syncLocation, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Subscribe to real-time Firestore updates
   useEffect(() => {
@@ -182,6 +193,35 @@ export default function App() {
     }
   };
 
+  // Compute nearest office site dynamically for header GPS status
+  const offices = Store.getOffices();
+  let headerGpsLabel = currentLocation.name;
+  let activeOffice: any = null;
+  let nearestOffice: any = null;
+  let minDistanceMeters = Infinity;
+
+  offices.forEach(office => {
+    const dist = getDistanceMeters(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      office.latitude,
+      office.longitude
+    );
+    if (dist < minDistanceMeters) {
+      minDistanceMeters = dist;
+      nearestOffice = office;
+    }
+    if (dist <= office.radiusMeters) {
+      activeOffice = office;
+    }
+  });
+
+  if (activeOffice) {
+    headerGpsLabel = `Authorized: ${activeOffice.name}`;
+  } else if (nearestOffice) {
+    headerGpsLabel = `Near ${nearestOffice.name} (${formatDistance(minDistanceMeters)})`;
+  }
+
   return (
     <>
       {/* Main content layer */}
@@ -245,6 +285,25 @@ export default function App() {
               </div>
 
               <div className="flex items-center gap-3">
+                
+                {/* Active Session User Profile Indicator */}
+                <div className="hidden md:flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-xl text-left shadow-2xs">
+                  <div className="h-6 w-6 rounded-full bg-blue-50 text-blue-600 font-bold text-[11px] flex items-center justify-center border border-blue-100">
+                    {currentUser.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="leading-none">
+                    <p className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Session Active</p>
+                    <p className="text-[11px] font-bold text-gray-800 mt-0.5">{currentUser.name} ({currentUser.role === 'admin' ? 'Manager' : 'Staff'})</p>
+                  </div>
+                </div>
+
+                {/* Real-time Nearest Geolocation Widget */}
+                <div className="flex items-center gap-1.5 bg-blue-50/60 border border-blue-100 px-3 py-1.5 rounded-xl shrink-0" title="Nearest Admin Configured Site Area">
+                  <MapPin className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+                  <span className="text-[11px] text-blue-800 font-semibold tracking-tight">
+                    Nearest: <strong className="text-blue-950 font-bold">{headerGpsLabel}</strong>
+                  </span>
+                </div>
                 
                 {/* AUDIT TRIGGER (Admins only) */}
                 {currentUser.role === 'admin' && (

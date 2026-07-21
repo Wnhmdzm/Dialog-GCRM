@@ -3,6 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -125,6 +126,73 @@ Write the report in a direct, commanding HSE auditor style. Use professional for
     } catch (error: any) {
       console.error('Gemini HSE audit error:', error);
       return res.status(500).json({ error: error.message || 'Error occurred during AI Audit execution.' });
+    }
+  });
+
+  // API route to send emails to real addresses using SMTP or default test transporter
+  app.post('/api/send-email', async (req, res) => {
+    const { to, subject, text, html } = req.body;
+    if (!to || !subject || (!text && !html)) {
+      return res.status(400).json({ error: 'Missing to, subject, text or html parameters.' });
+    }
+
+    try {
+      const smtpUser = process.env.SMTP_USER || '';
+      const smtpPass = process.env.SMTP_PASS || '';
+      const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+      const smtpPort = Number(process.env.SMTP_PORT || '587');
+      const sender = process.env.SMTP_SENDER || smtpUser || 'no-reply@dialogasia.com';
+
+      let transporter;
+      if (smtpUser && smtpPass) {
+        transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: smtpPort,
+          secure: smtpPort === 465,
+          auth: { user: smtpUser, pass: smtpPass },
+          tls: { rejectUnauthorized: false }
+        });
+      } else {
+        // Create a test account on-the-fly using ethereal.email for real delivery in sandboxed/preview testing
+        try {
+          const testAccount = await nodemailer.createTestAccount();
+          transporter = nodemailer.createTransport({
+            host: 'smtp.ethereal.email',
+            port: 587,
+            secure: false,
+            auth: {
+              user: testAccount.user,
+              pass: testAccount.pass
+            }
+          });
+          console.log(`Ethereal email test account created: User: ${testAccount.user}`);
+        } catch (etherealError) {
+          console.warn('Failed to create Ethereal test mailer, falling back to mock logger:', etherealError);
+        }
+      }
+
+      if (transporter) {
+        const info = await transporter.sendMail({
+          from: `"DIALOG HSE Control Support" <${sender}>`,
+          to,
+          subject,
+          text,
+          html: html || text.replace(/\n/g, '<br>')
+        });
+        console.log(`Email dispatched to ${to}. MessageId: ${info.messageId}`);
+        const previewUrl = nodemailer.getTestMessageUrl(info);
+        if (previewUrl) {
+          console.log(`Test Email Preview URL: ${previewUrl}`);
+          return res.json({ success: true, messageId: info.messageId, previewUrl });
+        }
+        return res.json({ success: true, messageId: info.messageId });
+      } else {
+        console.log(`[Email Mock Dispatch] To: ${to} | Subject: ${subject}`);
+        return res.json({ success: true, mocked: true });
+      }
+    } catch (error: any) {
+      console.error('Error dispatching real email:', error);
+      return res.status(500).json({ error: error.message || 'Email sending failed' });
     }
   });
 

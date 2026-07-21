@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Store } from '../utils/store';
 import { User } from '../types';
-import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText, Flame } from 'lucide-react';
+import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText, Flame, Award, ShieldCheck, Database, MapPin, Building, ChevronRight } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface LoginProps {
@@ -27,7 +27,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
   // Manual Book modal states
   const [isManualOpen, setIsManualOpen] = useState(false);
-  const [manualTab, setManualTab] = useState<'overview' | 'admin' | 'employee' | 'simulator' | 'evacuation'>('overview');
+  const [manualTab, setManualTab] = useState<string>('hse_centralization');
 
   // Direct Reset via URL/State link flow
   const [directResetUser, setDirectResetUser] = useState<User | null>(() => {
@@ -249,70 +249,81 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50/20 text-slate-900 p-4 relative font-sans overflow-y-auto">
+    <div className="min-h-screen flex items-center justify-center text-slate-900 p-4 relative font-sans overflow-y-auto bg-slate-950">
       
-      {/* Soft Glow Background Accents */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0 opacity-75"
+      >
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-slow-motion-of-gentle-water-ripples-40096-large.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* Elegant Dark Blue Overlay for outstanding text contrast */}
+      <div className="absolute inset-0 bg-blue-950/45 backdrop-blur-[1px] z-0 pointer-events-none"></div>
 
       <div className="w-full max-w-md relative z-10 py-8">
         {/* Top Branding Header */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="mb-4">
+          <div className="mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
             <DialogLogo size="lg" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 leading-none">
+          <h1 className="text-xl font-extrabold tracking-tight text-white leading-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
             Personnel On Board System
           </h1>
-          <p className="text-gray-400 text-[10px] mt-2.5 font-bold uppercase tracking-widest leading-none">Attendance & Personal Leave Planner Hub</p>
+          <p className="text-blue-200/80 text-[10px] mt-2.5 font-bold uppercase tracking-widest leading-none drop-shadow-sm">Attendance & Personal Leave Planner Hub</p>
         </div>
 
         {/* --- FLOW A: PASSWORD RESET FROM ADMIN LINK --- */}
         {directResetUser && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_16px_48px_rgba(0,0,0,0.065)] hover:shadow-[0_24px_64px_rgba(0,0,0,0.09)] relative text-left">
-            <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-2 tracking-tight">
-              <RefreshCw className="h-5 w-5 animate-spin-slow text-blue-500" />
+          <div className="bg-slate-950/60 border border-white/15 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_24px_64px_rgba(0,0,0,0.35)] relative text-left text-white">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-2 tracking-tight">
+              <RefreshCw className="h-5 w-5 animate-spin-slow text-blue-400" />
               Reset Staff Password
             </h2>
-            <p className="text-gray-500 text-xs mb-4">
-              Security link verified for account: <strong className="text-gray-900 font-medium">{directResetUser.name}</strong> ({directResetUser.email})
+            <p className="text-blue-200/70 text-xs mb-4">
+              Security link verified for account: <strong className="text-white font-medium">{directResetUser.name}</strong> ({directResetUser.email})
             </p>
 
             <form onSubmit={handleDirectResetSubmit} className="space-y-4">
               {error && (
-                <div className="p-3 bg-rose-50/60 border border-rose-100 rounded-xl text-rose-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
+                <div className="p-3 bg-rose-950/50 border border-rose-800/40 rounded-xl text-rose-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">New Password</label>
+                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">New Password</label>
                 <input
                   type="password"
                   placeholder="At least 6 characters"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">Confirm New Password</label>
                 <input
                   type="password"
                   placeholder="Repeat your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl uppercase tracking-wider transition-all shadow-sm shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/15 flex items-center justify-center gap-2"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/35 flex items-center justify-center gap-2"
               >
                 Save Password & Enter Workspace
                 <ArrowRight className="h-4 w-4" />
@@ -324,7 +335,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   setDirectResetUser(null);
                   if (onClearOverrideReset) onClearOverrideReset();
                 }}
-                className="w-full text-center text-[10px] text-gray-400 hover:text-gray-900 mt-2 font-semibold uppercase tracking-wider"
+                className="w-full text-center text-[10px] text-blue-200/70 hover:text-white mt-2 font-semibold uppercase tracking-wider"
               >
                 Cancel & Return
               </button>
@@ -334,59 +345,59 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
         {/* --- FLOW B: TEMPORARY FIRST TIME PASSWORD DETECTED --- */}
         {!directResetUser && pendingUser && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_16px_48px_rgba(0,0,0,0.065)] hover:shadow-[0_24px_64px_rgba(0,0,0,0.09)] relative text-left">
-            <h2 className="text-lg font-semibold text-amber-600 flex items-center gap-2 mb-2 tracking-tight">
-              <ShieldAlert className="h-5 w-5 text-amber-500" />
+          <div className="bg-slate-950/60 border border-white/15 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_24px_64px_rgba(0,0,0,0.35)] relative text-left text-white">
+            <h2 className="text-lg font-bold text-amber-400 flex items-center gap-2 mb-2 tracking-tight">
+              <ShieldAlert className="h-5 w-5 text-amber-400" />
               Security Reset Required
             </h2>
-            <p className="text-gray-500 text-xs mb-4">
-              Hello <strong className="text-gray-900 font-medium">{pendingUser.name}</strong>, you authenticated with the temporary credentials <code className="text-amber-800 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded font-mono text-[11px]">Dialog123</code>. You must configure a custom secure password to register shifts.
+            <p className="text-blue-100/80 text-xs mb-4">
+              Hello <strong className="text-white font-bold">{pendingUser.name}</strong>, you authenticated with the temporary credentials <code className="text-amber-200 bg-amber-950/40 border border-amber-800/40 px-1.5 py-0.5 rounded font-mono text-[11px]">Dialog123</code>. You must configure a custom secure password to register shifts.
             </p>
 
             <form onSubmit={handleFirstTimePasswordReset} className="space-y-4">
               {error && (
-                <div className="p-3 bg-rose-50/60 border border-rose-100 rounded-xl text-rose-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
+                <div className="p-3 bg-rose-950/50 border border-rose-800/40 rounded-xl text-rose-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">New Password</label>
+                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">New Password</label>
                 <input
                   type="password"
                   placeholder="Minimum 6 characters"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">Confirm New Password</label>
                 <input
                   type="password"
                   placeholder="Repeat your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold rounded-xl uppercase tracking-wider transition-all shadow-sm shadow-amber-500/10 flex items-center justify-center gap-2"
+                className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/35 flex items-center justify-center gap-2"
               >
-                Update & Enter CRM
+                Update & Enter Workspace
                 <ArrowRight className="h-4 w-4" />
               </button>
 
               <button
                 type="button"
                 onClick={() => setPendingUser(null)}
-                className="w-full text-center text-[10px] text-gray-400 hover:text-gray-900 mt-2 font-semibold uppercase tracking-wider"
+                className="w-full text-center text-[10px] text-blue-200/70 hover:text-white mt-2 font-semibold uppercase tracking-wider"
               >
                 Back to Login
               </button>
@@ -396,18 +407,18 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
         {/* --- FLOW C: MAIN LOGIN PANEL OR RESET DISPATCH --- */}
         {!directResetUser && !pendingUser && (
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_16px_48px_rgba(0,0,0,0.065)] hover:shadow-[0_24px_64px_rgba(0,0,0,0.09)] relative text-left">
+          <div className="bg-slate-950/60 border border-white/15 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_24px_64px_rgba(0,0,0,0.35)] relative text-left text-white">
             
             {error && (
-              <div className="mb-4 p-3 bg-rose-50/60 border border-rose-100 rounded-xl text-rose-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
+              <div className="mb-4 p-3 bg-rose-950/50 border border-rose-800/40 rounded-xl text-rose-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
                 <span>{error}</span>
               </div>
             )}
 
             {success && (
-              <div className="mb-4 p-3 bg-emerald-50/60 border border-emerald-100 rounded-xl text-emerald-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-500" />
+              <div className="mb-4 p-3 bg-emerald-950/50 border border-emerald-800/40 rounded-xl text-emerald-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-400" />
                 <span>{success}</span>
               </div>
             )}
@@ -415,8 +426,8 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             {!isResetFlow ? (
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-gray-400" />
+                  <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-blue-300" />
                     Employee Email
                   </label>
                   <input
@@ -425,21 +436,21 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     placeholder="email@dialogasia.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                     required
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                      <KeyRound className="h-3.5 w-3.5 text-gray-400" />
+                    <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider flex items-center gap-1.5">
+                      <KeyRound className="h-3.5 w-3.5 text-blue-300" />
                       Access Password
                     </label>
                     <button
                       type="button"
                       onClick={() => setIsResetFlow(true)}
-                      className="text-[10px] text-gray-400 hover:text-blue-600 font-semibold uppercase tracking-wider transition"
+                      className="text-[10px] text-blue-300 hover:text-blue-200 font-semibold uppercase tracking-wider transition"
                     >
                       Forgot?
                     </button>
@@ -450,7 +461,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                     required
                   />
                 </div>
@@ -458,7 +469,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <button
                   id="login_btn_submit"
                   type="submit"
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl uppercase tracking-wider transition-all shadow-sm shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/15 flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/35 flex items-center justify-center gap-2"
                 >
                   Enter Workspace Dashboard
                   <ArrowRight className="h-4 w-4" />
@@ -467,15 +478,15 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             ) : (
               <form onSubmit={handleAdminResetTrigger} className="space-y-4">
                 <div className="mb-2 text-left">
-                  <h3 className="text-sm font-semibold text-gray-900">Password Assistance</h3>
-                  <p className="text-gray-400 text-xs mt-1 leading-relaxed">
+                  <h3 className="text-sm font-bold text-white">Password Assistance</h3>
+                  <p className="text-blue-100/70 text-xs mt-1 leading-relaxed">
                     Enter your email to dispatch a secure password reset token link to the virtual Inbox tab.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-gray-400" />
+                  <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-blue-300" />
                     Registered Email
                   </label>
                   <input
@@ -483,14 +494,14 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     placeholder="email@dialogasia.com"
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
-                    className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 font-medium focus:ring-4 focus:ring-blue-500/5"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
                     required
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl uppercase tracking-wider transition-all shadow-sm shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/15"
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/35"
                 >
                   Send Reset Link Email
                 </button>
@@ -498,36 +509,12 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <button
                   type="button"
                   onClick={() => setIsResetFlow(false)}
-                  className="w-full text-center text-[10px] text-gray-400 hover:text-gray-900 font-semibold uppercase tracking-wider mt-2"
+                  className="w-full text-center text-[10px] text-blue-200/70 hover:text-white font-semibold uppercase tracking-wider mt-2"
                 >
                   Back to standard login
                 </button>
               </form>
             )}
-            <div className="mt-6 pt-5 border-t border-gray-100 text-left">
-              <p className="text-gray-400 text-[10px] text-center font-semibold uppercase tracking-wider mb-3">Live System Access</p>
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => selectMockUser('khairumi.kasim@dialogasia.com', 'Dialog123')}
-                  className="w-full p-4 bg-blue-50/40 hover:bg-blue-50 border border-blue-100 rounded-2xl text-left transition-all duration-150 flex items-center justify-between group"
-                >
-                  <div className="space-y-1">
-                    <span className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
-                      <UserCheck className="h-4 w-4 text-blue-600 shrink-0" />
-                      Khairumi Kasim (HSE Engineer / Admin)
-                    </span>
-                    <span className="text-[11px] text-blue-700/80 block font-mono">khairumi.kasim@dialogasia.com</span>
-                  </div>
-                  <span className="text-[10px] bg-blue-600 text-white font-semibold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-sm group-hover:bg-blue-700 transition">
-                    Autofill
-                  </span>
-                </button>
-                <p className="text-[10px] text-gray-400 text-center leading-relaxed">
-                  Demo personnel are purged. Log in as Admin to begin adding real employees dynamically from the Employee Management console. Default starting password: <strong className="text-gray-600">Dialog123</strong>
-                </p>
-              </div>
-            </div>
           </div>
         )}
 
@@ -536,205 +523,294 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
           <button
             type="button"
             onClick={() => setIsManualOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-150 rounded-2xl text-gray-700 font-medium text-xs tracking-tight shadow-sm transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl text-white font-medium text-xs tracking-tight shadow-md hover:shadow-lg transition-all backdrop-blur-md"
           >
-            <BookOpen className="h-4 w-4 text-blue-500 shrink-0" />
+            <BookOpen className="h-4 w-4 text-blue-300 shrink-0" />
             <span>Personnel On Board System Manual & Role Guide</span>
           </button>
 
           {/* Developer Credit */}
-          <div className="inline-flex items-center gap-1.5 text-[10px] text-gray-400 select-none">
-            <span className="w-1 h-1 rounded-full bg-teal-500 animate-pulse"></span>
-            <span>Build by <strong className="text-gray-500 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
+          <div className="inline-flex items-center gap-1.5 text-[10px] text-white/50 select-none">
+            <span className="w-1 h-1 rounded-full bg-teal-400 animate-pulse"></span>
+            <span>Build by <strong className="text-white/80 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
           </div>
         </div>
       </div>
 
       {/* --- MANUAL BOOK POP-UP DIVISION (MODAL OVERLAY) --- */}
       {isManualOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/15 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-2xl bg-white/95 backdrop-blur-xl border border-gray-150 rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.12)] flex flex-col max-h-[85vh] text-left overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-4xl bg-white border border-gray-150 rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.15)] flex flex-col max-h-[85vh] text-left overflow-hidden">
             
             {/* Modal Header */}
-            <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
               <div className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-blue-500 shrink-0" />
-                <h3 className="text-base font-semibold text-gray-950 tracking-tight">Personnel On Board System Guide</h3>
+                <BookOpen className="h-5 w-5 text-blue-600 shrink-0" />
+                <div>
+                  <h3 className="text-base font-bold text-gray-950 tracking-tight">Personnel On Board System Guide</h3>
+                  <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mt-0.5">Compliant Safety & Roster Operations</p>
+                </div>
               </div>
               <button
                 onClick={() => setIsManualOpen(false)}
-                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all"
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all border border-gray-100 hover:border-gray-200"
                 title="Close user guide"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Modal Menubar (Role tabs) */}
-            <div className="flex flex-wrap p-2 border-b border-gray-100 bg-gray-50/50 gap-1">
-              <button
-                onClick={() => setManualTab('overview')}
-                className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all duration-150 ${
-                  manualTab === 'overview'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <Monitor className="h-3.5 w-3.5" />
-                Overview
-              </button>
-              
-              <button
-                onClick={() => setManualTab('admin')}
-                className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all duration-150 ${
-                  manualTab === 'admin'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <UserPlus className="h-3.5 w-3.5" />
-                Admin / Manager
-              </button>
+            {/* Split Sidebar Layout */}
+            <div className="flex flex-1 min-h-0 overflow-hidden">
+              {/* Left Sidebar Menu */}
+              <div className="w-64 bg-gray-50/50 border-r border-gray-100 p-4 space-y-2 flex flex-col overflow-y-auto">
+                <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-1">Manual Sections</p>
+                <div className="space-y-1 flex-1">
+                  <button
+                    onClick={() => setManualTab('hse_centralization')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'hse_centralization'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <BookOpen className="h-4 w-4 shrink-0" />
+                    <span>HSE Centralization</span>
+                  </button>
 
-              <button
-                onClick={() => setManualTab('employee')}
-                className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all duration-150 ${
-                  manualTab === 'employee'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <UserCheck className="h-3.5 w-3.5" />
-                Employee Staff
-              </button>
+                  <button
+                    onClick={() => setManualTab('crew_onboarding')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'crew_onboarding'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <UserPlus className="h-4 w-4 shrink-0" />
+                    <span>Crew Onboarding</span>
+                  </button>
 
-              <button
-                onClick={() => setManualTab('simulator')}
-                className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all duration-150 ${
-                  manualTab === 'simulator'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <RefreshCw className="h-3.5 w-3.5" />
-                Simulator Guide
-              </button>
+                  <button
+                    onClick={() => setManualTab('geofencing')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'geofencing'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <MapPin className="h-4 w-4 shrink-0" />
+                    <span>GPS Geofencing</span>
+                  </button>
 
-              <button
-                onClick={() => setManualTab('evacuation')}
-                className={`px-4 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all duration-150 ${
-                  manualTab === 'evacuation'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                <Flame className="h-3.5 w-3.5 text-rose-500" />
-                Muster & Evac
-              </button>
-            </div>
+                  <button
+                    onClick={() => setManualTab('certificates')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'certificates'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <Award className="h-4 w-4 shrink-0" />
+                    <span>Offshore Certificates</span>
+                  </button>
 
-            {/* Modal Body Scroll Area */}
-            <div className="p-6 overflow-y-auto space-y-4 text-sm text-gray-600 leading-relaxed max-h-[55vh]">
-              {manualTab === 'overview' && (
-                <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">🌍 Welcome to Personnel On Board System</h4>
-                  <p>
-                    The Personnel On Board System is an advanced, compliant attendance and personal leave management system styled with elegant Swiss-minimalist aesthetics.
-                  </p>
-                  <p>
-                    The system implements strict **physical GPS geofencing**. Employees are prevented from checking in or checking out unless they are physically present within the allowed entry radius of authorized corporate office coordinates.
-                  </p>
-                  <div className="p-3.5 bg-gray-50 border border-gray-150 rounded-2xl text-[11px] text-gray-600 leading-normal space-y-1">
-                    <strong className="text-gray-900 font-medium">Core Tech Pillars:</strong><br/>
-                    • Real-time Firebase Firestore persistent database syncing<br/>
-                    • Standard geofencing calculation engine<br/>
-                    • Compliant administrative audit scanning system
+                  <button
+                    onClick={() => setManualTab('evacuation')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'evacuation'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <Flame className="h-4 w-4 shrink-0" />
+                    <span>Muster & Evac</span>
+                  </button>
+
+                  <button
+                    onClick={() => setManualTab('log_systems')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'log_systems'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <ShieldCheck className="h-4 w-4 shrink-0" />
+                    <span>Log Systems</span>
+                  </button>
+
+                  <button
+                    onClick={() => setManualTab('sandbox_simulator')}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
+                      manualTab === 'sandbox_simulator'
+                        ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <RefreshCw className="h-4 w-4 shrink-0" />
+                    <span>Sandbox Simulator</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Content Pane */}
+              <div className="flex-1 p-6 overflow-y-auto space-y-4 text-xs text-gray-600 leading-relaxed max-h-[60vh]">
+                {manualTab === 'hse_centralization' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">Safety Operations</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">How Centralized POB Operations Empowers HSE Teams</h4>
+                    </div>
+                    <p>
+                      In hazardous offshore sectors (including drilling vessels, gas terminals, refinery plants, and offshore rigs), fragmented personnel manifests and non-compliant operations represent a severe safety risk.
+                    </p>
+                    <p>
+                      The **Personnel On Board (POB) System** centralizes real-time attendance, leave planning, and certification status checks into a single workspace dashboard.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                      <div className="p-3 bg-blue-50/50 rounded-xl border border-blue-100/50 space-y-1">
+                        <strong className="text-blue-900 text-[11px] font-bold block">Centralized Headcount Control</strong>
+                        <p className="text-[10px] text-gray-600">Instantly view how many employees are currently checked in to each site on the global dashboard, ensuring physical personnel lists are completely in sync.</p>
+                      </div>
+                      <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100/50 space-y-1">
+                        <strong className="text-emerald-900 text-[11px] font-bold block">Dynamic Compliance Checks</strong>
+                        <p className="text-[10px] text-gray-600">The platform automatically monitors safety certificate expirations, blocking employees from clocking in when qualifications lapse.</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {manualTab === 'admin' && (
-                <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">👑 Manager & Administrator Guide</h4>
-                  <p>
-                    Log in as <strong className="text-gray-900 font-medium">khairumi.kasim@dialogasia.com</strong> (Password: <code className="bg-gray-50 px-1.5 py-0.5 border border-gray-150 text-gray-700 rounded-md">Dialog123</code>) to access global CRM modules:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>
-                      <strong>Employee Directory:</strong> Create new staff accounts, manage credentials, edit roles, or immediately suspend users. Suspended users are instantly disconnected in real-time.
-                    </li>
-                    <li>
-                      <strong>Office Sites Configuration:</strong> Pin authorized work coordinates (Latitude & Longitude) on the global map, specifying the geofence radius limit in meters.
-                    </li>
-                    <li>
-                      <strong>Shift Auditing Scan:</strong> Execute automated background runs. Any employee clocked in longer than 14 hours is automatically flagged, and an alert notification mail is sent to their simulated inbox.
-                    </li>
-                    <li>
-                      <strong>Audit logs:</strong> Review a permanent compliance register of logins, geofence breaches, leaves, and database writes.
-                    </li>
-                  </ul>
-                </div>
-              )}
+                {manualTab === 'crew_onboarding' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">Personnel Management</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">Crew Onboarding & Administrative Security</h4>
+                    </div>
+                    <p>
+                      The platform enforces a strict dual-role security architecture: **Administrators/HSE Managers** and **Employee Staff** to protect system integrity.
+                    </p>
+                    <p>
+                      When a new employee joins the platform, the onboarding flow guarantees optimal account security:
+                    </p>
+                    <ol className="list-decimal pl-4 space-y-2 text-[11px]">
+                      <li>
+                        <strong>Administrative Registration:</strong> HSE managers input the employee’s legal metadata, passport details, medical records, and role types.
+                      </li>
+                      <li>
+                        <strong>Temporary Credentials:</strong> A temporary secure password is auto-assigned (e.g., <code className="bg-gray-100 px-1 rounded font-mono font-bold text-gray-800">Dialog123</code>).
+                      </li>
+                      <li>
+                        <strong>Forced Security Reset:</strong> Upon first login, the user must immediately complete a forced password reset. They cannot enter the work workspace until a secure password has been configured.
+                      </li>
+                    </ol>
+                  </div>
+                )}
 
-              {manualTab === 'employee' && (
-                <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">💼 Employee & Staff User Guide</h4>
-                  <p>
-                    Select an employee like <strong className="text-gray-900 font-medium">Sarah Jenkins</strong> (Dialog123) or <strong className="text-gray-900 font-medium">John Doe</strong> (Dialog123) to interact as staff:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>
-                      <strong>Clock-In & Out:</strong> Lock your shifts using the Punch Clock widget. The widget calculates your distance to the selected office. If you are outside the geofence, you will be blocked with a geofence compliance alert!
-                    </li>
-                    <li>
-                      <strong>Leave Planning:</strong> Schedule leave days. Leave types include Annual, Emergency, Sick, or Unpaid and deduct automatically from live remaining quotas upon submission.
-                    </li>
-                    <li>
-                      <strong>Operations Dashboard:</strong> Track your weekly aggregated duty hours dynamically mapped onto a custom high-contrast SVG area graph.
-                    </li>
-                  </ul>
-                </div>
-              )}
+                {manualTab === 'geofencing' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">GPS Boundaries</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">Strict GPS Geofence Check-in Limits</h4>
+                    </div>
+                    <p>
+                      To eliminate attendance fraud and ensure personnel are physically present on-site during hazardous shifts, the platform implements a math-driven **GPS Geofencing Engine**.
+                    </p>
+                    <p>
+                      Each offshore office coordinate defines a radial compliance boundary (e.g., 200m or 500m). When employees clock in:
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1.5 text-[11px]">
+                      <li>The platform queries the device’s high-precision GPS coordinate values.</li>
+                      <li>It calculates the precise geographical distance using the **Haversine Ellipsoidal formula**.</li>
+                      <li>If the employee is outside the defined geofence boundary, clock-in is **strictly blocked** and a compliance breach event is logged.</li>
+                    </ul>
+                  </div>
+                )}
 
-              {manualTab === 'simulator' && (
-                <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">🕹️ Testing the Simulator Environment</h4>
-                  <p>
-                    Dialog incorporates helpful embedded sandbox components to easily test all coordinates, emails, and credentials:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>
-                      <strong>Virtual Location Emulator:</strong> In the sidebar or top header, use the coordinate dropdown to mock your current GPS position. Set your position to 'Circular Quay' or 'Silicon Valley SF' to easily test clock-ins, or toggle to 'Gated Breach Coordinate' to see the geofence compliance engine block your shift!
-                    </li>
-                    <li>
-                      <strong>Virtual Mail Room inbox:</strong> Access simulated email dispatches (bell icon). This lets you inspect system mail, like the password reset credentials generated for first-time employee onboarding.
-                    </li>
-                  </ul>
-                </div>
-              )}
+                {manualTab === 'certificates' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">Safety Qualifications</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">Offshore Safety Certificates & Training Controls</h4>
+                    </div>
+                    <p>
+                      Offshore personnel must maintain valid, accredited safety qualifications to remain active. The system dynamically tracks three core certification types:
+                    </p>
+                    <div className="space-y-2">
+                      <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-150">
+                        <strong className="text-gray-900">1. BOSIET (Basic Offshore Safety Induction & Emergency Training)</strong>
+                        <p className="text-[10px] text-gray-500 mt-0.5">Enforces essential induction training with helicopter underwater escape simulation (HUET) and breathing systems.</p>
+                      </div>
+                      <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-150">
+                        <strong className="text-gray-900">2. PETRONAS Medical (AHD)</strong>
+                        <p className="text-[10px] text-gray-500 mt-0.5">Validates the offshore fit-for-duty medical certificate required by local gas regulations.</p>
+                      </div>
+                      <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-150">
+                        <strong className="text-gray-900">3. CIDB Green Card</strong>
+                        <p className="text-[10px] text-gray-500 mt-0.5">The mandatory safety card issued for industrial site contractors and offshore personnel.</p>
+                      </div>
+                    </div>
+                    <p>
+                      If any certification expires or is missing, the profile is immediately flagged as **Non-Compliant**, and the crew member is blocked from clocking in.
+                    </p>
+                  </div>
+                )}
 
-              {manualTab === 'evacuation' && (
-                <div className="space-y-3 animate-fade-in">
-                  <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">🚨 Emergency Evacuation & Muster Protocol</h4>
-                  <p>
-                    The CRM system features a real-time **Emergency Evacuation Control Center** to ensure physical personnel accountability during a hazard event or standard fire drill.
-                  </p>
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>
-                      <strong>Triggering Evacuations (Managers):</strong> Admins can launch a muster-point check for any coordinate sector. Clocked-in personnel instantly receive high-priority alerts and critical dispatch email orders.
-                    </li>
-                    <li>
-                      <strong>Muster Registration (Staff):</strong> Clocked-in employees must evacuate immediately to the designated assembly zone, where they can click <strong>"Mark Myself Safe"</strong> or present their auto-generated <strong>Warden QR Identifier</strong>.
-                    </li>
-                    <li>
-                      <strong>Warden Muster Scan:</strong> Safety Wardens use the <strong>Assembly Point Scanner</strong> (with simulated camera stream or manual token registration) to log evacuated individuals as <strong>Verified Safe</strong>.
-                    </li>
-                    <li>
-                      <strong>Compliance Reporting:</strong> The active muster register tracks live metrics (Total Site Personnel, Registered Safe, and Missing Count) and is fully exportable to CSV for rescue teams and HSE compliance records.
-                    </li>
-                  </ul>
-                </div>
-              )}
+                {manualTab === 'evacuation' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">Emergency Protocols</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">Emergency Muster & Evacuation Control</h4>
+                    </div>
+                    <p>
+                      During drills or real hazard alerts, the platform coordinates an automated evacuation center to track physical personnel accountability.
+                    </p>
+                    <p>
+                      The **Muster and Evacuation cycle** utilizes real-time tracking:
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1.5 text-[11px]">
+                      <li><strong>Drill Trigger:</strong> Administrators launch an evacuation alert for a coordinate sector.</li>
+                      <li><strong>QR Dispatch:</strong> A unique, encrypted **Warden QR Code** is immediately generated on the employee's screen and dispatched to their virtual inbox.</li>
+                      <li><strong>Muster Point Headcount:</strong> Assembly Point Wardens scan the QR codes using device cameras, immediately logging the crew as **Verified Safe**.</li>
+                      <li><strong>Real-Time Analytics:</strong> HSE dashboards display live headcount tallies, indicating the exact count of personnel **Evacuating**, **Safe**, or **Missing**.</li>
+                    </ul>
+                  </div>
+                )}
+
+                {manualTab === 'log_systems' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">Integrity Assurance</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">Immutable Compliance Log Systems</h4>
+                    </div>
+                    <p>
+                      The system features a **Tamper-Proof Audit Logging Engine**. Any critical security or operational adjustment records an immutable entry containing:
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1 text-[11px]">
+                      <li>User token ID, active role, and IP coordinates.</li>
+                      <li>Detailed description of the modification or event.</li>
+                      <li>Exact ISO timestamp.</li>
+                    </ul>
+                    <p>
+                      HSE Supervisors and regulatory auditors can review this list to track login histories, geofence breaches, evacuation events, and administrative edits, ensuring absolute data transparency.
+                    </p>
+                  </div>
+                )}
+
+                {manualTab === 'sandbox_simulator' && (
+                  <div className="space-y-4 animate-fade-in text-left">
+                    <div className="border-b border-gray-100 pb-2">
+                      <span className="text-[10px] text-blue-600 font-extrabold uppercase tracking-widest block mb-1">Simulator Tools</span>
+                      <h4 className="text-sm font-bold text-gray-900 tracking-tight">Evaluating the Sandbox Simulator Environment</h4>
+                    </div>
+                    <p>
+                      To assist in assessing system compliance in-office, the workspace incorporates helpful testing widgets in the top-right and navigation header:
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1.5 text-[11px]">
+                      <li><strong>Virtual Location Emulator:</strong> Easily change your simulated coordinate from 'Circular Quay' (inside authorized office geofence) to 'Silicon Valley' or 'Gated Breach Coordinate' (outside geofence limits) to verify that geofencing blocks work instantly as expected.</li>
+                      <li><strong>Virtual Inbox Tab:</strong> Read the digital onboarding password reset dispatches, evacuation warning dispatches, and long-shift auditing alerts generated by system triggers.</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Modal Footer */}
@@ -742,7 +818,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
               <button
                 type="button"
                 onClick={() => setIsManualOpen(false)}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium text-xs rounded-xl shadow-sm shadow-blue-500/10 transition-colors"
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl shadow-sm shadow-blue-500/10 transition-all hover:shadow-lg"
               >
                 Understood, Let's Start!
               </button>

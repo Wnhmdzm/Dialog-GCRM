@@ -361,7 +361,7 @@ export class Store {
     this.saveActivityLogs(logs);
   }
 
-  static sendEmail(recipientEmail: string, subject: string, body: string, type: 'missing_shift' | 'overtime' | 'password_reset' | 'system') {
+  static sendEmail(recipientEmail: string, subject: string, body: string, type: 'missing_shift' | 'overtime' | 'password_reset' | 'system', html?: string) {
     const emails = this.getEmails();
     const newEmail: EmailNotification = {
       id: `mail-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -374,6 +374,27 @@ export class Store {
     };
     emails.unshift(newEmail);
     this.saveEmails(emails);
+
+    // Dispatch real email to the actual recipient address using the backend mail transporter
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: recipientEmail,
+        subject,
+        text: body,
+        html: html || body.replace(/\n/g, '<br>')
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Real email background delivery completed:', data);
+    })
+    .catch(err => {
+      console.warn('Real email background delivery failed (simulated mail fallback):', err);
+    });
   }
 
   static runShiftAudit(actorName: string, actorId: string): number {
@@ -494,6 +515,28 @@ export class Store {
   static saveCertificateRequests(requests: CertificateRequest[]) {
     localStorage.setItem(KEY_CERTIFICATE_REQUESTS, JSON.stringify(requests));
     this.syncCollectionWrite('certificateRequests', requests);
+  }
+
+  static getCertificateTypes(): string[] {
+    const data = localStorage.getItem('pob_certificate_types');
+    if (!data) {
+      const defaultTypes = [
+        'BOSIET (with EBS)',
+        'PETRONAS Offshore Medical (AHD)',
+        'CIDB Green Card',
+        'Offshore Safety Passport (OSP)',
+        'HUET / FOET',
+        'H2S Safety Training'
+      ];
+      localStorage.setItem('pob_certificate_types', JSON.stringify(defaultTypes));
+      return defaultTypes;
+    }
+    return JSON.parse(data);
+  }
+
+  static saveCertificateTypes(types: string[]) {
+    localStorage.setItem('pob_certificate_types', JSON.stringify(types));
+    this.syncCollectionWrite('certificateTypes', types);
   }
 
   // Clear all database tables and make the system completely fresh for live operation
