@@ -249,81 +249,70 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center text-slate-900 p-4 relative font-sans overflow-y-auto bg-slate-950">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50/20 text-slate-900 p-4 relative font-sans overflow-y-auto">
       
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-75"
-      >
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-slow-motion-of-gentle-water-ripples-40096-large.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      {/* Elegant Dark Blue Overlay for outstanding text contrast */}
-      <div className="absolute inset-0 bg-blue-950/45 backdrop-blur-[1px] z-0 pointer-events-none"></div>
+      {/* Soft Glow Background Accents */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-400/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="w-full max-w-md relative z-10 py-8">
         {/* Top Branding Header */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="mb-4 drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
+          <div className="mb-4">
             <DialogLogo size="lg" />
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-white leading-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]">
+          <h1 className="text-xl font-extrabold tracking-tight text-gray-900 leading-none">
             Personnel On Board System
           </h1>
-          <p className="text-blue-200/80 text-[10px] mt-2.5 font-bold uppercase tracking-widest leading-none drop-shadow-sm">Attendance & Personal Leave Planner Hub</p>
+          <p className="text-gray-400 text-[10px] mt-2.5 font-bold uppercase tracking-widest leading-none">Attendance & Personal Leave Planner Hub</p>
         </div>
 
         {/* --- FLOW A: PASSWORD RESET FROM ADMIN LINK --- */}
         {directResetUser && (
-          <div className="bg-slate-950/60 border border-white/15 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_24px_64px_rgba(0,0,0,0.35)] relative text-left text-white">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2 mb-2 tracking-tight">
-              <RefreshCw className="h-5 w-5 animate-spin-slow text-blue-400" />
+          <div className="bg-white/90 backdrop-blur-xl border border-gray-150 rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative text-left text-slate-800">
+            <h2 className="text-lg font-bold text-gray-950 flex items-center gap-2 mb-2 tracking-tight">
+              <RefreshCw className="h-5 w-5 animate-spin-slow text-blue-500" />
               Reset Staff Password
             </h2>
-            <p className="text-blue-200/70 text-xs mb-4">
-              Security link verified for account: <strong className="text-white font-medium">{directResetUser.name}</strong> ({directResetUser.email})
+            <p className="text-gray-500 text-xs mb-4">
+              Security link verified for account: <strong className="text-gray-950 font-semibold">{directResetUser.name}</strong> ({directResetUser.email})
             </p>
 
             <form onSubmit={handleDirectResetSubmit} className="space-y-4">
               {error && (
-                <div className="p-3 bg-rose-950/50 border border-rose-800/40 rounded-xl text-rose-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">New Password</label>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">New Password</label>
                 <input
                   type="password"
                   placeholder="At least 6 characters"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
                 <input
                   type="password"
                   placeholder="Repeat your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/35 flex items-center justify-center gap-2"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2"
               >
                 Save Password & Enter Workspace
                 <ArrowRight className="h-4 w-4" />
@@ -335,7 +324,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   setDirectResetUser(null);
                   if (onClearOverrideReset) onClearOverrideReset();
                 }}
-                className="w-full text-center text-[10px] text-blue-200/70 hover:text-white mt-2 font-semibold uppercase tracking-wider"
+                className="w-full text-center text-[10px] text-gray-400 hover:text-gray-900 mt-2 font-semibold uppercase tracking-wider"
               >
                 Cancel & Return
               </button>
@@ -345,50 +334,50 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
         {/* --- FLOW B: TEMPORARY FIRST TIME PASSWORD DETECTED --- */}
         {!directResetUser && pendingUser && (
-          <div className="bg-slate-950/60 border border-white/15 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_24px_64px_rgba(0,0,0,0.35)] relative text-left text-white">
-            <h2 className="text-lg font-bold text-amber-400 flex items-center gap-2 mb-2 tracking-tight">
-              <ShieldAlert className="h-5 w-5 text-amber-400" />
+          <div className="bg-white/90 backdrop-blur-xl border border-gray-150 rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative text-left text-slate-800">
+            <h2 className="text-lg font-bold text-amber-600 flex items-center gap-2 mb-2 tracking-tight">
+              <ShieldAlert className="h-5 w-5 text-amber-500" />
               Security Reset Required
             </h2>
-            <p className="text-blue-100/80 text-xs mb-4">
-              Hello <strong className="text-white font-bold">{pendingUser.name}</strong>, you authenticated with the temporary credentials <code className="text-amber-200 bg-amber-950/40 border border-amber-800/40 px-1.5 py-0.5 rounded font-mono text-[11px]">Dialog123</code>. You must configure a custom secure password to register shifts.
+            <p className="text-gray-500 text-xs mb-4">
+              Hello <strong className="text-gray-950 font-bold">{pendingUser.name}</strong>, you authenticated with the temporary credentials <code className="text-amber-800 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded font-mono text-[11px]">Dialog123</code>. You must configure a custom secure password to register shifts.
             </p>
 
             <form onSubmit={handleFirstTimePasswordReset} className="space-y-4">
               {error && (
-                <div className="p-3 bg-rose-950/50 border border-rose-800/40 rounded-xl text-rose-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                  <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">New Password</label>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">New Password</label>
                 <input
                   type="password"
                   placeholder="Minimum 6 characters"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
                 <input
                   type="password"
                   placeholder="Repeat your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                  className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-amber-500/20 hover:shadow-lg hover:shadow-amber-500/35 flex items-center justify-center gap-2"
+                className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-amber-500/10 hover:shadow-lg hover:shadow-amber-500/20 flex items-center justify-center gap-2"
               >
                 Update & Enter Workspace
                 <ArrowRight className="h-4 w-4" />
@@ -397,7 +386,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
               <button
                 type="button"
                 onClick={() => setPendingUser(null)}
-                className="w-full text-center text-[10px] text-blue-200/70 hover:text-white mt-2 font-semibold uppercase tracking-wider"
+                className="w-full text-center text-[10px] text-gray-400 hover:text-gray-900 mt-2 font-semibold uppercase tracking-wider"
               >
                 Back to Login
               </button>
@@ -407,18 +396,18 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
 
         {/* --- FLOW C: MAIN LOGIN PANEL OR RESET DISPATCH --- */}
         {!directResetUser && !pendingUser && (
-          <div className="bg-slate-950/60 border border-white/15 backdrop-blur-xl rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_24px_64px_rgba(0,0,0,0.35)] relative text-left text-white">
+          <div className="bg-white/90 backdrop-blur-xl border border-gray-150 rounded-3xl p-7 transition-all duration-300 hover:translate-y-[-3px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative text-left text-slate-800">
             
             {error && (
-              <div className="mb-4 p-3 bg-rose-950/50 border border-rose-800/40 rounded-xl text-rose-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
+              <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                <ShieldAlert className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
                 <span>{error}</span>
               </div>
             )}
 
             {success && (
-              <div className="mb-4 p-3 bg-emerald-950/50 border border-emerald-800/40 rounded-xl text-emerald-200 text-xs flex gap-2 items-start font-medium animate-fade-in">
-                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-400" />
+              <div className="mb-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-800 text-xs flex gap-2 items-start font-medium animate-fade-in">
+                <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5 text-emerald-500" />
                 <span>{success}</span>
               </div>
             )}
@@ -426,8 +415,8 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             {!isResetFlow ? (
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-blue-300" />
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-gray-400" />
                     Employee Email
                   </label>
                   <input
@@ -436,21 +425,21 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     placeholder="email@dialogasia.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                    className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                     required
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider flex items-center gap-1.5">
-                      <KeyRound className="h-3.5 w-3.5 text-blue-300" />
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <KeyRound className="h-3.5 w-3.5 text-gray-400" />
                       Access Password
                     </label>
                     <button
                       type="button"
                       onClick={() => setIsResetFlow(true)}
-                      className="text-[10px] text-blue-300 hover:text-blue-200 font-semibold uppercase tracking-wider transition"
+                      className="text-[10px] text-gray-400 hover:text-blue-600 font-semibold uppercase tracking-wider transition"
                     >
                       Forgot?
                     </button>
@@ -461,7 +450,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                    className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                     required
                   />
                 </div>
@@ -469,7 +458,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <button
                   id="login_btn_submit"
                   type="submit"
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/35 flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 flex items-center justify-center gap-2"
                 >
                   Enter Workspace Dashboard
                   <ArrowRight className="h-4 w-4" />
@@ -478,15 +467,15 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
             ) : (
               <form onSubmit={handleAdminResetTrigger} className="space-y-4">
                 <div className="mb-2 text-left">
-                  <h3 className="text-sm font-bold text-white">Password Assistance</h3>
-                  <p className="text-blue-100/70 text-xs mt-1 leading-relaxed">
+                  <h3 className="text-sm font-bold text-gray-950">Password Assistance</h3>
+                  <p className="text-gray-500 text-xs mt-1 leading-relaxed">
                     Enter your email to dispatch a secure password reset token link to the virtual Inbox tab.
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold text-blue-200 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Mail className="h-3.5 w-3.5 text-blue-300" />
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5 text-gray-400" />
                     Registered Email
                   </label>
                   <input
@@ -494,14 +483,14 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                     placeholder="email@dialogasia.com"
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl focus:border-blue-400 focus:bg-white/10 px-3.5 py-2.5 text-sm outline-none transition text-white placeholder-white/25 focus:ring-4 focus:ring-blue-400/10"
+                    className="w-full bg-gray-50/50 border border-gray-200 rounded-xl focus:border-blue-500 focus:bg-white px-3.5 py-2.5 text-sm outline-none transition text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/5"
                     required
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/35"
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl uppercase tracking-wider transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20"
                 >
                   Send Reset Link Email
                 </button>
@@ -509,7 +498,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                 <button
                   type="button"
                   onClick={() => setIsResetFlow(false)}
-                  className="w-full text-center text-[10px] text-blue-200/70 hover:text-white font-semibold uppercase tracking-wider mt-2"
+                  className="w-full text-center text-[10px] text-gray-400 hover:text-gray-900 font-semibold uppercase tracking-wider mt-2"
                 >
                   Back to standard login
                 </button>
@@ -523,16 +512,16 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
           <button
             type="button"
             onClick={() => setIsManualOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl text-white font-medium text-xs tracking-tight shadow-md hover:shadow-lg transition-all backdrop-blur-md"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-150 rounded-2xl text-gray-700 font-semibold text-xs tracking-tight shadow-sm hover:shadow-md transition-all"
           >
-            <BookOpen className="h-4 w-4 text-blue-300 shrink-0" />
+            <BookOpen className="h-4 w-4 text-blue-500 shrink-0" />
             <span>Personnel On Board System Manual & Role Guide</span>
           </button>
 
           {/* Developer Credit */}
-          <div className="inline-flex items-center gap-1.5 text-[10px] text-white/50 select-none">
-            <span className="w-1 h-1 rounded-full bg-teal-400 animate-pulse"></span>
-            <span>Build by <strong className="text-white/80 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
+          <div className="inline-flex items-center gap-1.5 text-[10px] text-gray-400 select-none">
+            <span className="w-1 h-1 rounded-full bg-teal-500 animate-pulse"></span>
+            <span>Build by <strong className="text-gray-500 font-bold">Khairumi Kasim, HSE Engineer</strong></span>
           </div>
         </div>
       </div>
