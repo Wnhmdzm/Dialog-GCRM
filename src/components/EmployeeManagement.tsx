@@ -199,6 +199,7 @@ export default function EmployeeManagement({ currentUser, onRefreshStats }: Empl
                   <th className="py-3 px-4 border-r border-gray-50">Employee</th>
                   <th className="py-3 px-4 border-r border-gray-50">Role / Access</th>
                   <th className="py-3 px-4 border-r border-gray-50">Account Status</th>
+                  <th className="py-3 px-4 border-r border-gray-50">Last Login</th>
                   <th className="py-3 px-4 border-r border-gray-50 text-center">First-Time Change</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
@@ -242,6 +243,18 @@ export default function EmployeeManagement({ currentUser, onRefreshStats }: Empl
                         <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-rose-500">
                           <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse"></span>
                           Suspended
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 border-r border-gray-50 font-mono text-[10px]">
+                      {user.lastLoginAt ? (
+                        <span className="text-gray-800 font-semibold flex flex-col">
+                          <span>{new Date(user.lastLoginAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                          <span className="text-[9px] text-gray-400 font-normal">{new Date(user.lastLoginAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-full text-[9px] font-mono inline-block">
+                          Never
                         </span>
                       )}
                     </td>

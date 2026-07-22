@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Store } from '../utils/store';
 import { User } from '../types';
-import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText, Flame, Award, ShieldCheck, Database, MapPin, Building, ChevronRight } from 'lucide-react';
+import { KeyRound, Mail, ShieldAlert, ArrowRight, CheckCircle2, UserCheck, RefreshCw, BookOpen, X, Monitor, UserPlus, FileText, Flame, Award, ShieldCheck, Database, MapPin, Building, ChevronRight, ChevronDown } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 
 interface LoginProps {
@@ -28,6 +28,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
   // Manual Book modal states
   const [isManualOpen, setIsManualOpen] = useState(false);
   const [manualTab, setManualTab] = useState<string>('hse_centralization');
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Direct Reset via URL/State link flow
   const [directResetUser, setDirectResetUser] = useState<User | null>(() => {
@@ -103,8 +104,12 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
       console.warn("Firebase Authentication synchronization omitted:", authError);
     }
 
-    // Direct Login Successful
-    Store.saveCurrentUser(matchedUser);
+    // Direct Login Successful - Update lastLoginAt
+    const updatedUser: User = { ...matchedUser, lastLoginAt: new Date().toISOString() };
+    const updatedUserList = users.map(u => u.id === matchedUser.id ? updatedUser : u);
+    Store.saveUsers(updatedUserList);
+    Store.saveCurrentUser(updatedUser);
+
     Store.logActivity(
       matchedUser.id,
       matchedUser.name,
@@ -112,7 +117,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
       'USER_LOGIN',
       `Logged into the CRM workspace successfully.`
     );
-    onLoginSuccess(matchedUser);
+    onLoginSuccess(updatedUser);
   };
 
   const handleFirstTimePasswordReset = (e: React.FormEvent) => {
@@ -140,11 +145,12 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
     passwords[pendingUser.id] = newPassword;
     Store.savePasswords(passwords);
 
-    // Update user record flag
+    // Update user record flag and lastLoginAt
+    const loginTime = new Date().toISOString();
     const users = Store.getUsers();
     const updatedUsers = users.map(u => {
       if (u.id === pendingUser.id) {
-        return { ...u, firstTimePasswordChangeRequired: false };
+        return { ...u, firstTimePasswordChangeRequired: false, lastLoginAt: loginTime };
       }
       return u;
     });
@@ -540,23 +546,33 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mt-0.5">Compliant Safety & Roster Operations</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsManualOpen(false)}
-                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all border border-gray-100 hover:border-gray-200"
-                title="Close user guide"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="md:hidden text-xs font-semibold px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border border-gray-200 flex items-center gap-1"
+                >
+                  {showMobileMenu ? 'Hide Menu' : 'Sections'}
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showMobileMenu ? 'rotate-180' : ''}`} />
+                </button>
+                <button
+                  onClick={() => setIsManualOpen(false)}
+                  className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all border border-gray-100 hover:border-gray-200"
+                  title="Close user guide"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
-            {/* Split Sidebar Layout */}
-            <div className="flex flex-1 min-h-0 overflow-hidden">
-              {/* Left Sidebar Menu */}
-              <div className="w-64 bg-gray-50/50 border-r border-gray-100 p-4 space-y-2 flex flex-col overflow-y-auto">
+            {/* Split Sidebar Layout (Flex column on mobile, flex row on desktop) */}
+            <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-hidden">
+              {/* Left Sidebar Menu (Hideable on phone view) */}
+              <div className={`${showMobileMenu ? 'block' : 'hidden'} md:block w-full md:w-64 bg-gray-50/50 border-b md:border-b-0 md:border-r border-gray-100 p-4 space-y-2 flex flex-col overflow-y-auto shrink-0`}>
                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-1">Manual Sections</p>
                 <div className="space-y-1 flex-1">
                   <button
-                    onClick={() => setManualTab('hse_centralization')}
+                    onClick={() => { setManualTab('hse_centralization'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'hse_centralization'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
@@ -568,7 +584,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </button>
 
                   <button
-                    onClick={() => setManualTab('crew_onboarding')}
+                    onClick={() => { setManualTab('crew_onboarding'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'crew_onboarding'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
@@ -580,7 +596,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </button>
 
                   <button
-                    onClick={() => setManualTab('geofencing')}
+                    onClick={() => { setManualTab('geofencing'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'geofencing'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
@@ -592,7 +608,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </button>
 
                   <button
-                    onClick={() => setManualTab('certificates')}
+                    onClick={() => { setManualTab('certificates'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'certificates'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
@@ -604,7 +620,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </button>
 
                   <button
-                    onClick={() => setManualTab('evacuation')}
+                    onClick={() => { setManualTab('evacuation'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'evacuation'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
@@ -616,7 +632,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </button>
 
                   <button
-                    onClick={() => setManualTab('log_systems')}
+                    onClick={() => { setManualTab('log_systems'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'log_systems'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
@@ -628,7 +644,7 @@ export default function Login({ onLoginSuccess, overrideResetUserId, onClearOver
                   </button>
 
                   <button
-                    onClick={() => setManualTab('sandbox_simulator')}
+                    onClick={() => { setManualTab('sandbox_simulator'); setShowMobileMenu(false); }}
                     className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left transition-all ${
                       manualTab === 'sandbox_simulator'
                         ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'

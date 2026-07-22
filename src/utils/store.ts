@@ -58,130 +58,109 @@ export class Store {
     await this.forceSeedAllCollections();
   }
 
-  // Unconditionally seed or sync all current records into Firestore
-  static async forceSeedAllCollections() {
+  // Completely reset local storage and sync a fresh set of records to Firestore
+  static async resetAndFreshSeedFirestore() {
     try {
-      // 1. Seed Users
+      console.log("Resetting all database stores and writing fresh records to Firestore...");
+      // 1. Reset local storage keys
+      localStorage.setItem(KEY_USERS, JSON.stringify(INITIAL_USERS));
+      localStorage.setItem(KEY_PASSWORDS, JSON.stringify(INITIAL_USER_PASSWORDS));
+      localStorage.setItem(KEY_OFFICES, JSON.stringify(INITIAL_OFFICES));
+      localStorage.setItem(KEY_PUNCH_LOGS, JSON.stringify(INITIAL_PUNCH_LOGS));
+      localStorage.setItem(KEY_ACTIVITY_LOGS, JSON.stringify(INITIAL_ACTIVITY_LOGS));
+      localStorage.setItem(KEY_EMAILS, JSON.stringify(INITIAL_EMAILS));
+      localStorage.setItem(KEY_LEAVE_DAYS, JSON.stringify([]));
+      localStorage.setItem(KEY_LEAVE_QUOTAS, JSON.stringify([
+        { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
+        { userId: 'user-ahmad', userName: 'Ahmad Razak (Senior Tech)', annual: 14, emergency: 5, sick: 10 }
+      ]));
+      localStorage.setItem(KEY_EVACUATION_EVENTS, JSON.stringify([]));
+      localStorage.setItem(KEY_EVACUATION_MEMBERS, JSON.stringify([]));
+      localStorage.setItem(KEY_CERTIFICATES, JSON.stringify([]));
+      localStorage.setItem(KEY_CERTIFICATE_REQUESTS, JSON.stringify([]));
+
+      // 2. Force push clean seed records to Firestore
+      return await this.forceSeedAllCollections(true);
+    } catch (e) {
+      console.error("Reset database error:", e);
+      return false;
+    }
+  }
+
+  // Unconditionally seed or sync all current records into Firestore
+  static async forceSeedAllCollections(forceOverwrite = false) {
+    try {
+      const usersToSync = this.getUsers();
+      const passwordsToSync = this.getPasswords();
+
+      // 1. Write/Sync Users
       try {
-        const usersSnap = await getDocs(collection(db, 'users'));
-        if (usersSnap.empty) {
-          console.log("Seeding users collection to Firestore...");
-          for (const u of INITIAL_USERS) {
-            await setDoc(doc(db, 'users', u.id), this.sanitizeForFirestore(u));
-          }
+        console.log("Syncing users to Firestore...");
+        for (const u of usersToSync) {
+          await setDoc(doc(db, 'users', u.id), this.sanitizeForFirestore(u));
         }
       } catch (err) {
-        console.warn("User seeding error:", err);
+        console.warn("User syncing error:", err);
       }
 
-      // 2. Seed Passwords
+      // 2. Write/Sync Passwords
       try {
-        const passSnap = await getDocs(collection(db, 'passwords'));
-        if (passSnap.empty) {
-          console.log("Seeding passwords collection to Firestore...");
-          for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
-            await setDoc(doc(db, 'passwords', id), { password: pass });
-          }
+        console.log("Syncing passwords to Firestore...");
+        for (const [id, pass] of Object.entries(passwordsToSync)) {
+          await setDoc(doc(db, 'passwords', id), { password: pass });
         }
       } catch (err) {
-        console.warn("Password seeding error:", err);
+        console.warn("Password syncing error:", err);
       }
 
       // 3. Seed Office Sites
       try {
-        const officeSnap = await getDocs(collection(db, 'officeSites'));
-        if (officeSnap.empty) {
-          console.log("Seeding officeSites collection to Firestore...");
-          for (const o of INITIAL_OFFICES) {
-            await setDoc(doc(db, 'officeSites', o.id), this.sanitizeForFirestore(o));
-          }
+        const offices = this.getOffices();
+        for (const o of offices) {
+          await setDoc(doc(db, 'officeSites', o.id), this.sanitizeForFirestore(o));
         }
       } catch (err) {
-        console.warn("Office sites seeding error:", err);
+        console.warn("Office sites syncing error:", err);
       }
 
       // 4. Seed Punch Logs
       try {
-        const punchSnap = await getDocs(collection(db, 'punchLogs'));
-        if (punchSnap.empty) {
-          console.log("Seeding punchLogs collection to Firestore...");
-          for (const p of INITIAL_PUNCH_LOGS) {
-            await setDoc(doc(db, 'punchLogs', p.id), this.sanitizeForFirestore(p));
-          }
+        const punch = this.getPunchLogs();
+        for (const p of punch) {
+          await setDoc(doc(db, 'punchLogs', p.id), this.sanitizeForFirestore(p));
         }
       } catch (err) {
-        console.warn("Punch logs seeding error:", err);
+        console.warn("Punch logs syncing error:", err);
       }
 
       // 5. Seed Activity Logs
       try {
-        const actSnap = await getDocs(collection(db, 'activityLogs'));
-        if (actSnap.empty) {
-          console.log("Seeding activityLogs collection to Firestore...");
-          for (const a of INITIAL_ACTIVITY_LOGS) {
-            await setDoc(doc(db, 'activityLogs', a.id), this.sanitizeForFirestore(a));
-          }
+        const act = this.getActivityLogs();
+        for (const a of act) {
+          await setDoc(doc(db, 'activityLogs', a.id), this.sanitizeForFirestore(a));
         }
       } catch (err) {
-        console.warn("Activity logs seeding error:", err);
+        console.warn("Activity logs syncing error:", err);
       }
 
       // 6. Seed Emails
       try {
-        const emailSnap = await getDocs(collection(db, 'emails'));
-        if (emailSnap.empty) {
-          console.log("Seeding emails collection to Firestore...");
-          for (const e of INITIAL_EMAILS) {
-            await setDoc(doc(db, 'emails', e.id), this.sanitizeForFirestore(e));
-          }
+        const em = this.getEmails();
+        for (const e of em) {
+          await setDoc(doc(db, 'emails', e.id), this.sanitizeForFirestore(e));
         }
       } catch (err) {
-        console.warn("Emails seeding error:", err);
+        console.warn("Emails syncing error:", err);
       }
 
       // 7. Seed Leave Quotas
       try {
-        const quotaSnap = await getDocs(collection(db, 'leaveQuotas'));
-        if (quotaSnap.empty) {
-          console.log("Seeding leaveQuotas collection to Firestore...");
-          const initialQuotas: LeaveQuota[] = [
-            { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
-            { userId: 'user-ahmad', userName: 'Ahmad Razak (Senior Tech)', annual: 14, emergency: 5, sick: 10 }
-          ];
-          for (const q of initialQuotas) {
-            await setDoc(doc(db, 'leaveQuotas', q.userId), this.sanitizeForFirestore(q));
-          }
+        const quotas = this.getLeaveQuotas();
+        for (const q of quotas) {
+          await setDoc(doc(db, 'leaveQuotas', q.userId), this.sanitizeForFirestore(q));
         }
       } catch (err) {
-        console.warn("Leave quotas seeding error:", err);
-      }
-
-      // 8. Ensure primary Admin account and default user passwords match in Firestore
-      const khairumiUser: User = {
-        id: 'user-khairumi',
-        name: 'Khairumi Kasim (HSE Engineer)',
-        email: 'khairumi.kasim@dialogasia.com',
-        role: 'admin',
-        joinedAt: '2026-07-20T08:00:00Z',
-        firstTimePasswordChangeRequired: false,
-        status: 'active',
-        avatarUrl: 'https://hoirqrkdgbmvpwutwuwj-all.supabase.co/storage/v1/object/public/assets/assets/ea777f21-df8c-431d-956a-57390ff9e591_320w.jpg',
-        phone: '+60 12-345 6789',
-        offshoreGridNumber: 'GRID-PGR-01',
-        epTravelStatus: 'Approved'
-      };
-      await setDoc(doc(db, 'users', khairumiUser.id), this.sanitizeForFirestore(khairumiUser));
-      await setDoc(doc(db, 'passwords', khairumiUser.id), { password: 'Dialog123' });
-      await setDoc(doc(db, 'leaveQuotas', khairumiUser.id), this.sanitizeForFirestore({
-        userId: khairumiUser.id,
-        userName: khairumiUser.name,
-        annual: 14,
-        emergency: 5,
-        sick: 10
-      }));
-
-      for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
-        await setDoc(doc(db, 'passwords', id), { password: pass });
+        console.warn("Leave quotas syncing error:", err);
       }
 
       console.log("Firestore database seeding & sync completed successfully!");

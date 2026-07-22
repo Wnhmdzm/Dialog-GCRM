@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame, Award, BookOpen, MessageSquare, Database, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { LayoutDashboard, Clock, MapPin, Users, FileBarChart2, ShieldAlert, Mail, LogOut, Shield, Calendar, X, User as UserIcon, Flame, Award, BookOpen, MessageSquare, RotateCcw } from 'lucide-react';
 import DialogLogo from './DialogLogo';
 import { Store } from '../utils/store';
 
@@ -24,24 +24,26 @@ export default function Sidebar({
   onToggle
 }: SidebarProps) {
   const isAdmin = currentUser.role === 'admin';
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
+  const [resetMessage, setResetMessage] = useState<string | null>(null);
 
-  const handleSyncFirestore = async () => {
-    setIsSyncing(true);
-    setSyncMessage(null);
-    try {
-      const ok = await Store.forceSeedAllCollections();
-      if (ok) {
-        setSyncMessage("Data written to dialog-gcrm!");
-      } else {
-        setSyncMessage("Sync completed.");
+  const handleResetDatabase = async () => {
+    if (confirm("Are you sure you want to reset all database records to a clean fresh start? This will overwrite local cache and push clean default users to Firestore.")) {
+      setIsResetting(true);
+      setResetMessage(null);
+      try {
+        const ok = await Store.resetAndFreshSeedFirestore();
+        if (ok) {
+          setResetMessage("Database reset & written to dialog-gcrm!");
+          setTimeout(() => window.location.reload(), 1200);
+        } else {
+          setResetMessage("Reset completed.");
+        }
+      } catch (e) {
+        setResetMessage("Reset failed.");
+      } finally {
+        setIsResetting(false);
       }
-    } catch (e) {
-      setSyncMessage("Sync error. Check rules.");
-    } finally {
-      setIsSyncing(false);
-      setTimeout(() => setSyncMessage(null), 4000);
     }
   };
 
@@ -220,30 +222,35 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* Footer log out and database sync action */}
+      {/* Footer log out and database status action */}
       <div className="mt-auto pt-4 border-t border-gray-200/60 text-left space-y-2">
-        <button
-          onClick={handleSyncFirestore}
-          disabled={isSyncing}
-          className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-blue-700 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/60 transition-all disabled:opacity-50"
-          title="Force seed & sync all records to Firebase Firestore (dialog-gcrm)"
-        >
+        <div className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-[11px] font-semibold text-emerald-800 bg-emerald-50/80 border border-emerald-200/60">
           <div className="flex items-center gap-2">
-            {isSyncing ? (
-              <RefreshCw className="h-3.5 w-3.5 animate-spin text-blue-600" />
-            ) : (
-              <Database className="h-3.5 w-3.5 text-blue-600" />
-            )}
-            <span>{isSyncing ? 'Syncing Firestore...' : 'Sync Data to Firestore'}</span>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>Firestore Auto-Sync Active</span>
           </div>
-          {syncMessage && (
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-          )}
-        </button>
+        </div>
 
-        {syncMessage && (
+        {isAdmin && (
+          <button
+            onClick={handleResetDatabase}
+            disabled={isResetting}
+            className="w-full flex items-center justify-between px-3.5 py-1.5 rounded-xl text-[11px] font-semibold text-amber-700 bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/60 transition-all disabled:opacity-50"
+            title="Reset database and sync fresh initial records to Firestore"
+          >
+            <div className="flex items-center gap-2">
+              <RotateCcw className="h-3.5 w-3.5 text-amber-600" />
+              <span>{isResetting ? 'Resetting DB...' : 'Reset & Fresh Seed DB'}</span>
+            </div>
+          </button>
+        )}
+
+        {resetMessage && (
           <p className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60 animate-fade-in">
-            {syncMessage}
+            {resetMessage}
           </p>
         )}
 

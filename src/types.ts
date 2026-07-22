@@ -6,6 +6,7 @@ export interface User {
   email: string;
   role: UserRole;
   joinedAt: string;
+  lastLoginAt?: string;
   firstTimePasswordChangeRequired: boolean;
   status: 'active' | 'suspended';
   avatarUrl?: string;
