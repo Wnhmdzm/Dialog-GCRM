@@ -2,145 +2,44 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Default deny catch-all
-    match /{document=**} {
-      allow read, write: if false;
-    }
-
-    // Common helper functions
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
     // --- Users Collection ---
     match /users/{userId} {
-      allow read: if true;
-      allow create, update: if userId == request.resource.data.id && isValidUser(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidUser(data) {
-      return data.id is string && data.id.size() <= 128
-        && data.name is string && data.name.size() <= 128
-        && data.email is string && data.email.size() <= 128
-        && (data.role == 'admin' || data.role == 'employee')
-        && data.joinedAt is string && data.joinedAt.size() <= 64
-        && data.firstTimePasswordChangeRequired is bool
-        && (data.status == 'active' || data.status == 'suspended')
-        && (!('avatarUrl' in data) || (data.avatarUrl is string && data.avatarUrl.size() <= 512));
+      allow read, write: if true;
     }
 
     // --- Passwords Collection ---
     match /passwords/{userId} {
-      allow read: if true;
-      allow create, update: if userId is string && request.resource.data.password is string && request.resource.data.password.size() <= 128;
-      allow delete: if true;
+      allow read, write: if true;
     }
 
     // --- OfficeSites Collection ---
     match /officeSites/{siteId} {
-      allow read: if true;
-      allow create, update: if siteId == request.resource.data.id && isValidOfficeSite(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidOfficeSite(data) {
-      return data.id is string && data.id.size() <= 128
-        && data.name is string && data.name.size() <= 128
-        && data.latitude is number
-        && data.longitude is number
-        && data.radiusMeters is number
-        && data.address is string && data.address.size() <= 256;
+      allow read, write: if true;
     }
 
     // --- PunchLogs Collection ---
     match /punchLogs/{punchId} {
-      allow read: if true;
-      allow create, update: if punchId == request.resource.data.id && isValidPunchLog(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidPunchLog(data) {
-      return data.id is string && data.id.size() <= 128
-        && data.userId is string && data.userId.size() <= 128
-        && data.userName is string && data.userName.size() <= 128
-        && data.userEmail is string && data.userEmail.size() <= 128
-        && (data.type == 'in' || data.type == 'out')
-        && data.timestamp is string && data.timestamp.size() <= 64
-        && data.latitude is number
-        && data.longitude is number
-        && data.verified is bool
-        && (!('manhours' in data) || data.manhours is number)
-        && (!('officeSiteId' in data) || (data.officeSiteId is string && data.officeSiteId.size() <= 128))
-        && (!('officeSiteName' in data) || (data.officeSiteName is string && data.officeSiteName.size() <= 128))
-        && (!('tags' in data) || (data.tags is list && data.tags.size() <= 20))
-        && (!('note' in data) || (data.note is string && data.note.size() <= 1024));
+      allow read, write: if true;
     }
 
     // --- ActivityLogs Collection ---
     match /activityLogs/{logId} {
-      allow read: if true;
-      allow create, update: if logId == request.resource.data.id && isValidActivityLog(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidActivityLog(data) {
-      return data.id is string && data.id.size() <= 128
-        && data.userId is string && data.userId.size() <= 128
-        && data.userName is string && data.userName.size() <= 128
-        && (data.userRole == 'admin' || data.userRole == 'employee')
-        && data.action is string && data.action.size() <= 128
-        && data.details is string && data.details.size() <= 1024
-        && data.timestamp is string && data.timestamp.size() <= 64;
+      allow read, write: if true;
     }
 
     // --- Emails Collection ---
     match /emails/{emailId} {
-      allow read: if true;
-      allow create, update: if emailId == request.resource.data.id && isValidEmail(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidEmail(data) {
-      return data.id is string && data.id.size() <= 128
-        && data.recipientEmail is string && data.recipientEmail.size() <= 128
-        && data.subject is string && data.subject.size() <= 256
-        && data.body is string && data.body.size() <= 4096
-        && data.sentAt is string && data.sentAt.size() <= 64
-        && (data.type == 'missing_shift' || data.type == 'overtime' || data.type == 'password_reset' || data.type == 'system')
-        && data.read is bool;
+      allow read, write: if true;
     }
 
     // --- LeaveDays Collection ---
     match /leaveDays/{leaveId} {
-      allow read: if true;
-      allow create, update: if leaveId == request.resource.data.id && isValidLeaveDay(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidLeaveDay(data) {
-      return data.id is string && data.id.size() <= 128
-        && data.userId is string && data.userId.size() <= 128
-        && data.userName is string && data.userName.size() <= 128
-        && data.date is string && data.date.size() <= 10
-        && (data.type == 'Annual' || data.type == 'Emergency' || data.type == 'Sick' || data.type == 'Unpaid')
-        && (data.status == 'Approved' || data.status == 'Pending' || data.status == 'Rejected')
-        && data.note is string && data.note.size() <= 1024;
+      allow read, write: if true;
     }
 
     // --- LeaveQuotas Collection ---
     match /leaveQuotas/{quotaId} {
-      allow read: if true;
-      allow create, update: if quotaId == request.resource.data.userId && isValidLeaveQuota(request.resource.data);
-      allow delete: if true;
-    }
-
-    function isValidLeaveQuota(data) {
-      return data.userId is string && data.userId.size() <= 128
-        && data.userName is string && data.userName.size() <= 128
-        && data.annual is number
-        && data.emergency is number
-        && data.sick is number;
+      allow read, write: if true;
     }
 
     // --- EvacuationEvents Collection ---
@@ -152,5 +51,21 @@ service cloud.firestore {
     match /evacuationMembers/{memberId} {
       allow read, write: if true;
     }
+
+    // --- Certificates Collection ---
+    match /certificates/{certId} {
+      allow read, write: if true;
+    }
+
+    // --- CertificateRequests Collection ---
+    match /certificateRequests/{requestId} {
+      allow read, write: if true;
+    }
+
+    // --- CertificateTypes Collection ---
+    match /certificateTypes/{typeId} {
+      allow read, write: if true;
+    }
   }
 }
+

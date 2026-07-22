@@ -22,6 +22,11 @@ const KEY_CERTIFICATE_REQUESTS = 'geoclock_certificate_requests';
 export class Store {
   private static unsubscribes: (() => void)[] = [];
 
+  // Helper to remove undefined properties before sending data to Firestore
+  private static sanitizeForFirestore<T>(data: T): T {
+    return JSON.parse(JSON.stringify(data));
+  }
+
   // Firestore synchronization helper that syncs adds, updates, and deletes
   private static async syncCollectionWrite<T>(collectionName: string, items: T[], idField: string = 'id') {
     try {
@@ -29,7 +34,8 @@ export class Store {
       for (const item of items) {
         const id = String((item as any)[idField]);
         if (id) {
-          await setDoc(doc(db, collectionName, id), item);
+          const sanitized = this.sanitizeForFirestore(item);
+          await setDoc(doc(db, collectionName, id), sanitized);
         }
       }
       
@@ -51,50 +57,67 @@ export class Store {
     try {
       const usersSnapshot = await getDocs(collection(db, 'users'));
       if (usersSnapshot.empty) {
-        console.log("Firestore database is empty. Bootstrapping initial mock data...");
+        console.log("Firestore users database is empty. Bootstrapping initial users and schema...");
         
         // Seed users
         for (const u of INITIAL_USERS) {
-          await setDoc(doc(db, 'users', u.id), u);
+          await setDoc(doc(db, 'users', u.id), this.sanitizeForFirestore(u));
         }
-        
-        // Seed passwords
+      }
+
+      // Seed passwords if empty
+      const passSnapshot = await getDocs(collection(db, 'passwords'));
+      if (passSnapshot.empty) {
         for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
           await setDoc(doc(db, 'passwords', id), { password: pass });
         }
-        
-        // Seed offices
-        for (const o of INITIAL_OFFICES) {
-          await setDoc(doc(db, 'officeSites', o.id), o);
-        }
-        
-        // Seed punch logs
-        for (const p of INITIAL_PUNCH_LOGS) {
-          await setDoc(doc(db, 'punchLogs', p.id), p);
-        }
-        
-        // Seed activity logs
-        for (const a of INITIAL_ACTIVITY_LOGS) {
-          await setDoc(doc(db, 'activityLogs', a.id), a);
-        }
-        
-        // Seed emails
-        for (const e of INITIAL_EMAILS) {
-          await setDoc(doc(db, 'emails', e.id), e);
-        }
-        
-        // Seed leave quotas
-        const initialQuotas: LeaveQuota[] = [
-          { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
-        ];
-        for (const q of initialQuotas) {
-          await setDoc(doc(db, 'leaveQuotas', q.userId), q);
-        }
-        
-        console.log("Firebase Firestore successfully bootstrapped with default CRM schema.");
       }
 
-      // Ensure Khairumi Kasim exists as an admin in Firebase unconditionally (as requested by user)
+      // Seed officeSites if empty
+      const officeSnapshot = await getDocs(collection(db, 'officeSites'));
+      if (officeSnapshot.empty) {
+        for (const o of INITIAL_OFFICES) {
+          await setDoc(doc(db, 'officeSites', o.id), this.sanitizeForFirestore(o));
+        }
+      }
+
+      // Seed punchLogs if empty
+      const punchSnapshot = await getDocs(collection(db, 'punchLogs'));
+      if (punchSnapshot.empty) {
+        for (const p of INITIAL_PUNCH_LOGS) {
+          await setDoc(doc(db, 'punchLogs', p.id), this.sanitizeForFirestore(p));
+        }
+      }
+
+      // Seed activityLogs if empty
+      const activitySnapshot = await getDocs(collection(db, 'activityLogs'));
+      if (activitySnapshot.empty) {
+        for (const a of INITIAL_ACTIVITY_LOGS) {
+          await setDoc(doc(db, 'activityLogs', a.id), this.sanitizeForFirestore(a));
+        }
+      }
+
+      // Seed emails if empty
+      const emailSnapshot = await getDocs(collection(db, 'emails'));
+      if (emailSnapshot.empty) {
+        for (const e of INITIAL_EMAILS) {
+          await setDoc(doc(db, 'emails', e.id), this.sanitizeForFirestore(e));
+        }
+      }
+
+      // Seed leaveQuotas if empty
+      const quotaSnapshot = await getDocs(collection(db, 'leaveQuotas'));
+      if (quotaSnapshot.empty) {
+        const initialQuotas: LeaveQuota[] = [
+          { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
+          { userId: 'user-ahmad', userName: 'Ahmad Razak (Senior Tech)', annual: 14, emergency: 5, sick: 10 }
+        ];
+        for (const q of initialQuotas) {
+          await setDoc(doc(db, 'leaveQuotas', q.userId), this.sanitizeForFirestore(q));
+        }
+      }
+
+      // Ensure Khairumi Kasim exists as an admin in Firebase unconditionally
       const khairumiUser: User = {
         id: 'user-khairumi',
         name: 'Khairumi Kasim (HSE Engineer)',
@@ -103,34 +126,29 @@ export class Store {
         joinedAt: '2026-07-20T08:00:00Z',
         firstTimePasswordChangeRequired: false,
         status: 'active',
-        avatarUrl: 'https://hoirqrkdgbmvpwutwuwj-all.supabase.co/storage/v1/object/public/assets/assets/ea777f21-df8c-431d-956a-57390ff9e591_320w.jpg'
+        avatarUrl: 'https://hoirqrkdgbmvpwutwuwj-all.supabase.co/storage/v1/object/public/assets/assets/ea777f21-df8c-431d-956a-57390ff9e591_320w.jpg',
+        phone: '+60 12-345 6789',
+        offshoreGridNumber: 'GRID-PGR-01',
+        epTravelStatus: 'Approved'
       };
-      await setDoc(doc(db, 'users', khairumiUser.id), khairumiUser);
+      await setDoc(doc(db, 'users', khairumiUser.id), this.sanitizeForFirestore(khairumiUser));
       await setDoc(doc(db, 'passwords', khairumiUser.id), { password: 'Dialog123' });
-      await setDoc(doc(db, 'leaveQuotas', khairumiUser.id), {
+      await setDoc(doc(db, 'leaveQuotas', khairumiUser.id), this.sanitizeForFirestore({
         userId: khairumiUser.id,
         userName: khairumiUser.name,
         annual: 14,
         emergency: 5,
         sick: 10
-      });
-
-      // Clean up the legacy user-admin account from Firebase so it is fully deleted
-      try {
-        const { deleteDoc } = await import('firebase/firestore');
-        await deleteDoc(doc(db, 'users', 'user-admin'));
-        await deleteDoc(doc(db, 'passwords', 'user-admin'));
-        await deleteDoc(doc(db, 'leaveQuotas', 'user-admin'));
-      } catch (err) {
-        console.warn("Could not delete old admin account documents:", err);
-      }
+      }));
 
       // Synchronize all preset user passwords in Firestore unconditionally to ensure they match "Dialog123"
       for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
         await setDoc(doc(db, 'passwords', id), { password: pass });
       }
+
+      console.log("Firebase Firestore seeding verification completed.");
     } catch (error) {
-      console.warn("Auto-seeding skipped (permission rules active or network pending).", error);
+      console.warn("Auto-seeding skipped or encountered warning:", error);
     }
   }
 
