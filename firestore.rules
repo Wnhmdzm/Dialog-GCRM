@@ -1,69 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // --- Users Collection ---
-    match /users/{userId} {
-      allow read, write: if true;
-    }
-
-    // --- Passwords Collection ---
-    match /passwords/{userId} {
-      allow read, write: if true;
-    }
-
-    // --- OfficeSites Collection ---
-    match /officeSites/{siteId} {
-      allow read, write: if true;
-    }
-
-    // --- PunchLogs Collection ---
-    match /punchLogs/{punchId} {
-      allow read, write: if true;
-    }
-
-    // --- ActivityLogs Collection ---
-    match /activityLogs/{logId} {
-      allow read, write: if true;
-    }
-
-    // --- Emails Collection ---
-    match /emails/{emailId} {
-      allow read, write: if true;
-    }
-
-    // --- LeaveDays Collection ---
-    match /leaveDays/{leaveId} {
-      allow read, write: if true;
-    }
-
-    // --- LeaveQuotas Collection ---
-    match /leaveQuotas/{quotaId} {
-      allow read, write: if true;
-    }
-
-    // --- EvacuationEvents Collection ---
-    match /evacuationEvents/{eventId} {
-      allow read, write: if true;
-    }
-
-    // --- EvacuationMembers Collection ---
-    match /evacuationMembers/{memberId} {
-      allow read, write: if true;
-    }
-
-    // --- Certificates Collection ---
-    match /certificates/{certId} {
-      allow read, write: if true;
-    }
-
-    // --- CertificateRequests Collection ---
-    match /certificateRequests/{requestId} {
-      allow read, write: if true;
-    }
-
-    // --- CertificateTypes Collection ---
-    match /certificateTypes/{typeId} {
+    match /{document=**} {
       allow read, write: if true;
     }
   }

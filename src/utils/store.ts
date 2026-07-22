@@ -54,70 +54,109 @@ export class Store {
 
   // Seeding mechanism to populate connected Firebase databases initially with mock workspace data
   static async seedFirestoreIfNeeded() {
+    console.log("Starting Firestore synchronization check...");
+    await this.forceSeedAllCollections();
+  }
+
+  // Unconditionally seed or sync all current records into Firestore
+  static async forceSeedAllCollections() {
     try {
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      if (usersSnapshot.empty) {
-        console.log("Firestore users database is empty. Bootstrapping initial users and schema...");
-        
-        // Seed users
-        for (const u of INITIAL_USERS) {
-          await setDoc(doc(db, 'users', u.id), this.sanitizeForFirestore(u));
+      // 1. Seed Users
+      try {
+        const usersSnap = await getDocs(collection(db, 'users'));
+        if (usersSnap.empty) {
+          console.log("Seeding users collection to Firestore...");
+          for (const u of INITIAL_USERS) {
+            await setDoc(doc(db, 'users', u.id), this.sanitizeForFirestore(u));
+          }
         }
+      } catch (err) {
+        console.warn("User seeding error:", err);
       }
 
-      // Seed passwords if empty
-      const passSnapshot = await getDocs(collection(db, 'passwords'));
-      if (passSnapshot.empty) {
-        for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
-          await setDoc(doc(db, 'passwords', id), { password: pass });
+      // 2. Seed Passwords
+      try {
+        const passSnap = await getDocs(collection(db, 'passwords'));
+        if (passSnap.empty) {
+          console.log("Seeding passwords collection to Firestore...");
+          for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
+            await setDoc(doc(db, 'passwords', id), { password: pass });
+          }
         }
+      } catch (err) {
+        console.warn("Password seeding error:", err);
       }
 
-      // Seed officeSites if empty
-      const officeSnapshot = await getDocs(collection(db, 'officeSites'));
-      if (officeSnapshot.empty) {
-        for (const o of INITIAL_OFFICES) {
-          await setDoc(doc(db, 'officeSites', o.id), this.sanitizeForFirestore(o));
+      // 3. Seed Office Sites
+      try {
+        const officeSnap = await getDocs(collection(db, 'officeSites'));
+        if (officeSnap.empty) {
+          console.log("Seeding officeSites collection to Firestore...");
+          for (const o of INITIAL_OFFICES) {
+            await setDoc(doc(db, 'officeSites', o.id), this.sanitizeForFirestore(o));
+          }
         }
+      } catch (err) {
+        console.warn("Office sites seeding error:", err);
       }
 
-      // Seed punchLogs if empty
-      const punchSnapshot = await getDocs(collection(db, 'punchLogs'));
-      if (punchSnapshot.empty) {
-        for (const p of INITIAL_PUNCH_LOGS) {
-          await setDoc(doc(db, 'punchLogs', p.id), this.sanitizeForFirestore(p));
+      // 4. Seed Punch Logs
+      try {
+        const punchSnap = await getDocs(collection(db, 'punchLogs'));
+        if (punchSnap.empty) {
+          console.log("Seeding punchLogs collection to Firestore...");
+          for (const p of INITIAL_PUNCH_LOGS) {
+            await setDoc(doc(db, 'punchLogs', p.id), this.sanitizeForFirestore(p));
+          }
         }
+      } catch (err) {
+        console.warn("Punch logs seeding error:", err);
       }
 
-      // Seed activityLogs if empty
-      const activitySnapshot = await getDocs(collection(db, 'activityLogs'));
-      if (activitySnapshot.empty) {
-        for (const a of INITIAL_ACTIVITY_LOGS) {
-          await setDoc(doc(db, 'activityLogs', a.id), this.sanitizeForFirestore(a));
+      // 5. Seed Activity Logs
+      try {
+        const actSnap = await getDocs(collection(db, 'activityLogs'));
+        if (actSnap.empty) {
+          console.log("Seeding activityLogs collection to Firestore...");
+          for (const a of INITIAL_ACTIVITY_LOGS) {
+            await setDoc(doc(db, 'activityLogs', a.id), this.sanitizeForFirestore(a));
+          }
         }
+      } catch (err) {
+        console.warn("Activity logs seeding error:", err);
       }
 
-      // Seed emails if empty
-      const emailSnapshot = await getDocs(collection(db, 'emails'));
-      if (emailSnapshot.empty) {
-        for (const e of INITIAL_EMAILS) {
-          await setDoc(doc(db, 'emails', e.id), this.sanitizeForFirestore(e));
+      // 6. Seed Emails
+      try {
+        const emailSnap = await getDocs(collection(db, 'emails'));
+        if (emailSnap.empty) {
+          console.log("Seeding emails collection to Firestore...");
+          for (const e of INITIAL_EMAILS) {
+            await setDoc(doc(db, 'emails', e.id), this.sanitizeForFirestore(e));
+          }
         }
+      } catch (err) {
+        console.warn("Emails seeding error:", err);
       }
 
-      // Seed leaveQuotas if empty
-      const quotaSnapshot = await getDocs(collection(db, 'leaveQuotas'));
-      if (quotaSnapshot.empty) {
-        const initialQuotas: LeaveQuota[] = [
-          { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
-          { userId: 'user-ahmad', userName: 'Ahmad Razak (Senior Tech)', annual: 14, emergency: 5, sick: 10 }
-        ];
-        for (const q of initialQuotas) {
-          await setDoc(doc(db, 'leaveQuotas', q.userId), this.sanitizeForFirestore(q));
+      // 7. Seed Leave Quotas
+      try {
+        const quotaSnap = await getDocs(collection(db, 'leaveQuotas'));
+        if (quotaSnap.empty) {
+          console.log("Seeding leaveQuotas collection to Firestore...");
+          const initialQuotas: LeaveQuota[] = [
+            { userId: 'user-khairumi', userName: 'Khairumi Kasim (HSE Engineer)', annual: 14, emergency: 5, sick: 10 },
+            { userId: 'user-ahmad', userName: 'Ahmad Razak (Senior Tech)', annual: 14, emergency: 5, sick: 10 }
+          ];
+          for (const q of initialQuotas) {
+            await setDoc(doc(db, 'leaveQuotas', q.userId), this.sanitizeForFirestore(q));
+          }
         }
+      } catch (err) {
+        console.warn("Leave quotas seeding error:", err);
       }
 
-      // Ensure Khairumi Kasim exists as an admin in Firebase unconditionally
+      // 8. Ensure primary Admin account and default user passwords match in Firestore
       const khairumiUser: User = {
         id: 'user-khairumi',
         name: 'Khairumi Kasim (HSE Engineer)',
@@ -141,14 +180,15 @@ export class Store {
         sick: 10
       }));
 
-      // Synchronize all preset user passwords in Firestore unconditionally to ensure they match "Dialog123"
       for (const [id, pass] of Object.entries(INITIAL_USER_PASSWORDS)) {
         await setDoc(doc(db, 'passwords', id), { password: pass });
       }
 
-      console.log("Firebase Firestore seeding verification completed.");
+      console.log("Firestore database seeding & sync completed successfully!");
+      return true;
     } catch (error) {
       console.warn("Auto-seeding skipped or encountered warning:", error);
+      return false;
     }
   }
 
